@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Mus Tool</title>
+    <style>
+    body, html {padding:0;; margin:0; display:table; width:100%;}
+    #left {display:table-cell; padding:10px; box-sizing:border-box;}
+    #right {display:table-cell; width:500px; padding:10px; box-sizing:border-box;}
+    .msg {padding:5px 0;}
+    </style>
+  </head>
+  <body>
+    <div id="left">
+      <div><input id="dumpbutton" type="button" value="重新导出数据（重新初始化）" onclick="dumpall()" /></div>
+      <div class="msg" id="msg1">↑↑注意，这会覆盖当前的文件，注意备份</div>
+
+      <div><input id="createbutton" type="button" value="创建新的MUS和MPF文件" onclick="startthis()" /></div>
+      <div class="msg" id="msg">↑↑点击上方的按钮开始写入文件</div>
+    </div>
+    <div id="right">
+      <p>注意：这个工具处于试验阶段。</p>
+      <p></p>
+      <p>mod中使用track-mem.mus（id="Track_mem"）会导致游戏里所有所有音乐失效，track-mem.mus文件目前只用来研究。</p>
+      <p><img src="sdk1.png" /></p>
+    </div>
+    <script>
+      function disablebuttons(){
+        document.getElementById('dumpbutton').disabled='disabled';
+        document.getElementById('createbutton').disabled='disabled';
+      }
+      function enablebuttons(){
+        document.getElementById('dumpbutton').disabled='';
+        document.getElementById('createbutton').disabled='';
+      }
+      function startthis(){
+        document.getElementById('msg').innerHTML = '开始写入……';
+        disablebuttons();
+        setTimeout(function(){
+          writemusfiles();
+          document.getElementById('msg').innerHTML = '写入完成。';
+          enablebuttons();
+        },1);
+      }
+      function dumpall(){
+        if(!confirm('确定要重新导出数据吗？')){
+          return;
+        }
+        var msg1 = document.getElementById('msg1');
+        disablebuttons();
+        msg1.innerHTML = '开始导出……';
+        msg1.innerHTML += '<br>从mus中导出sns和sns数据';
+        setTimeout(function(){
+          dumpsnrandsns();
+        msg1.innerHTML += '<br>导出track信息到tracks.txt';
+        setTimeout(function(){
+          printtracks();
+        msg1.innerHTML += '<br>导出node信息到nodes.txt';;
+        setTimeout(function(){
+          printnodeinfos();
+        msg1.innerHTML += '<br>导出event信息到events.txt';
+        setTimeout(function(){
+          printevents();
+          msg1.innerHTML += '<br>导出完成。';
+          enablebuttons();
+        },1);
+        },1);
+        },1);
+        },1);
+      }
+    </script>
+    <script src="somecrc32.js"></script>
+    <script>
+const fs = require('fs');
+
+var path = '../';
+var mpfpath = 'pc.mpf';
+var musfiles = ['track.mus', 'track-mem.mus'];
+var mpf = fs.readFileSync(path + mpfpath);
+
+var pack = 1;
+
+var PATHFINDHEADER ={
+    id:-32,
+    majorRev:8,
+    minorRev: 8,
+    release: 8,
+    prerelease: 8,
+    saveIncrement: 16,
+    generateID: 16,
+    projectID: 8,
+    numtracks: 8,
+    numsections: 8,
+    numevents: 8,
+    numrouters: 8,
+    numnamedvars: 8,
+    numnodes: 16,
+    nodeoffsets: 32,
+    nodedata: 32,
+    eventoffsets: 32,
+    eventdata: 32,
+    namedvars: 32,
+    noderouters: 32,
+    trackoffsets: 32,
+    trackinfos: 32,
+    sampleoffsets: 32,
+    mapfilelen: 32,
+    v40reserve: [32,3],
+};
+
+var PATHNODEBEATS = {
+    forcesynch : 1,
+    playbeats : 1
+};
+
+var PATHNODEEVENT = {
+    eventID : 24
+};
+
+var PATHNODECHANNEL = {
+    eventID : 24,
+    channelset : 4
+};
+
+var PATHNODEEXTRA = {
+    beat: PATHNODEBEATS,
+    sendevent: PATHNODEEVENT,
+    channelbranch: PATHNODECHANNEL,
+    __union: [32,1]
+};
+
+var PATHFINDNODE = {
+    index : -16,
+    trackID : 5,
+    sectionID : 6,
+    repeat : -5,
+    routerID : 12,
+    numbranches : 5,
+    controller : 3,
+    beats : 4,
+    bars : 8,
+    partID : 16,
+    synchevery : 4,
+    synchoffset : 4,
+    notes : 4,
+    synch : 2,
+    channelbranching : 1,
+    unused : 1,
+    extra: PATHNODEEXTRA
+};
+
+var PATHEVENT = {
+    queued: 32,
+    expiry: 32,
+    lastact: 32,
+    eventID : 24,
+    numactions : 8,
+    currentaction : 8,
+    voices : 4,
+    priority : -4,
+    bumplower : 1,
+    beingFiltered : 1,
+    project : -3,
+    unused : -11
+};
+
+var PATHNAMEDVAR = {
+    name: 'string(16)',
+    value: -32
+};
+
+var PATHTRACKINFO = {
+    startingsample: 32,
+    numsubbanks: 16,
+    purgemode: 16,
+    muschecksum: 32,
+    maxaram: 32,
+    maxmram: 32
+};
+
+var PATHFINDSAMPLE = {
+    offset: 32,
+    duration: 32
+};
+
+var PATHMUSHEADER = {
+    checksum: -32,
+    numsamples: -32,
+    reserved: [-8,32]
+};
+
+var PATHFINDBRANCH = {
+    controlmin: -8,
+    controlmax: -8,
+    dstnode: 16
+};
+
+var PATHNODEOFFSETS = {
+    nodechecksum: 32,
+    index: 16,
+    subindex: 16,
+    snroffset: 32,
+    snsoffset: 32,
+    snrbytes: 32,
+    snsbytes: 32,
+    gstream: 32
+};
+
+const PATHACTIONTYPE = {
+    PATHACTION_NONE : 0,
+    PATHACTION_CONDITION : 1,
+    PATHACTION_WAITTIME : 2,
+    PATHACTION_WAITBEAT : 3,
+    PATHACTION_BRANCHTO : 4,
+    PATHACTION_FADE : 5,
+    PATHACTION_DRYLEVELFADE : 6,
+    PATHACTION_SFXFADE : 7,
+    PATHACTION_SETVALUE : 8,
+    PATHACTION_EVENT : 9,
+    PATHACTION_FILTER_ON : 10,
+    PATHACTION_FILTER_OFF : 11,
+    PATHACTION_FILTER_CLEAR : 12,
+    PATHACTION_CALLBACK : 13,
+    PATHACTION_CALC : 14,
+    PATHACTION_PAUSE : 15,
+    PATHACTION_LOADBANK : 16,
+    PATHACTION_PITCHFADE : 17,
+    PATHACTION_STRETCHFADE : 18,
+    PATHACTION_MAX : 19
+};
+
+const PATHFADETYPE = {
+    PATH_FADE_LINEAR : 1,
+    PATH_FADE_EQPOWER : 2,
+    PATH_FADE_EXPONENTIAL : 3,
+    PATH_FADE_COSINE : 4
+};
+
+var PATHACTPAUSE = {
+    when : 16,
+    on : 1
+};
+
+var PATHACTSTRETCHFADE = {
+    tovol : 14,
+    id : -3,
+    flip : 1,
+    ms : 14
+};
+
+var PATHACTCALC = {
+    value : 8,
+    op : 8,
+    by : -16
+};
+
+const PATHVALUETYPE = {
+    PATH_VALUE_BADTYPE : 0,
+    PATH_VALUE_SPECIAL : 1,
+    PATH_VALUE_VARIABLE : 2,
+    PATH_VALUE_INTEGER : 3,
+    PATH_VALUE_MAXTYPES : 4
+};
+
+const PATHSPECIALVALUETYPE = {
+    PATH_SPECIALVALUE_BAD : 0,
+    PATH_CONTROLLER : 1,
+    PATH_CURRENTNODE : 2,
+    PATH_CURRENTPART : 3,
+    PATH_CURRENTSECTION : 4,
+    PATH_EVENTEXPIRY : 5,
+    PATH_EVENTPRIORITY : 6,
+    PATH_FXBUS : 7,
+    PATH_FXDRYLEVEL : 8,
+    PATH_FXSENDLEVEL : 9,
+    PATH_MAINVOICE : 10,
+    PATH_NEXTNODE : 11,
+    PATH_NOBRANCHING : 12,
+    PATH_NODEDURATION : 13,
+    PATH_PAUSE : 14,
+    PATH_PITCHMULT : 15,
+    PATH_PLAYINGNODE : 16,
+    PATH_PLAYSTATUS : 17,
+    PATH_RANDOMSHORT : 18,
+    PATH_TIMENOW : 19,
+    PATH_TIMETONEXTBEAT : 20,
+    PATH_TIMETONEXTBAR : 21,
+    PATH_TIMETONEXTNODE : 22,
+    PATH_VOLUME : 23,
+    PATH_TIMESTRETCH : 24,
+    PATH_BARDURATION : 25,
+    PATH_BEATDURATION : 26,
+    PATH_CURRENTCHANNELSET : 27,
+    PATH_PLAYINGCHANNELSET : 28,
+    PATH_SPECIALVALUE_MAX : 29
+};
+
+const PATHOPERATOR = {
+    PATH_OPERATOR_INVALID : 0,
+    PATH_OPERATOR_ADD : 1,
+    PATH_OPERATOR_SUB : 2,
+    PATH_OPERATOR_MULT : 3,
+    PATH_OPERATOR_DIV : 4,
+    PATH_OPERATOR_MOD : 5,
+    PATH_OPERATOR_MAX : 6
+};
+
+const PATHCOMPARE = {
+    PATH_COMPARE_INVALID : 0,
+    PATH_COMPARE_EQUALS : 1,
+    PATH_COMPARE_NOT_EQUAL : 2,
+    PATH_COMPARE_GREATER_THAN : 3,
+    PATH_COMPARE_LESS_THAN : 4,
+    PATH_COMPARE_GREATER_OR_EQUAL : 5,
+    PATH_COMPARE_LESS_OR_EQUAL : 6,
+    PATH_COMPARE_MAX : 7
+};
+
+var PATHACTCONDITION = {
+    value : -16,
+    compareValue : -16
+};
+
+var PATHACTCALLBACK = {
+    value : -16,
+    id : 16
+};
+
+var PATHACTFADE  = {
+    tovol : 8,
+    id : -7,
+    flip : 1,
+    ms : 16
+};
+
+var PATHACTSFXFADE = {
+    tovol : 8,
+    id : -7,
+    flip : 1,
+    ms : 16
+};
+
+var PATHACTSETVALUE = {
+    towhat : -16,
+    setwhat : 8
+};
+
+var PATHACTWAITTIME = {
+    millisecs : -16,
+    lowest : -16
+};
+
+var PATHACTPITCHFADE = {
+    tovol : 14,
+    id : -3,
+    flip : 1,
+    ms : 14
+};
+
+var PATHACTWAITBEAT = {
+    millisecs : -16,
+    every : 4,
+    note : 4,
+    offset : 4
+};
+
+var PATHACTDRYFADE = {
+    tovol : 8,
+    id : -7,
+    flip : 1,
+    ms : 16
+};
+
+var PATHACTEVENT = {
+    eventid : 24
+};
+
+var PATHACTBRANCHTO = {
+    node : -16,
+    ofsection : -8,
+    immediate : -1
+};
+
+var PATHLOADBANK = {
+    subbanknum : 8,
+    unload : 8
+};
+
+var PATHACT = {
+    only: PATHACTCONDITION,
+    waittime: PATHACTWAITTIME,
+    waitbeat: PATHACTWAITBEAT,
+    branch: PATHACTBRANCHTO,
+    fade: PATHACTFADE,
+    sfxfade: PATHACTSFXFADE,
+    dryfade: PATHACTDRYFADE,
+    pitchfade: PATHACTPITCHFADE,
+    stretchfade: PATHACTSTRETCHFADE,
+    setval: PATHACTSETVALUE,
+    event: PATHACTEVENT,
+    callback: PATHACTCALLBACK,
+    calc: PATHACTCALC,
+    pause: PATHACTPAUSE,
+    loadbank: PATHLOADBANK,
+    __union: [32,1]
+};
+
+var PATHACTION = {
+    track: -32,
+    sectionID : -8,
+    type : 7,
+    done : 1,
+    leftvaluetype : 2,
+    rightvaluetype : 2,
+    assess : 3,
+    comparison : 3,
+    indent : 3,
+    unused : 3,
+    act: PATHACT
+};
+
+var MYSNRSTRUCT = {
+    unimportant: 16,
+    sampleratebe: 16,
+    unk:8,
+    numsamplesbe: 24
+};
+
+function vk(c,v){
+  for(var k in c){
+    if(c[k]==v){
+      return k;
+    }
+  }
+  return '';
+}
+
+function bitat(buf, pos){
+  var sb1 = Math.floor(pos/8);
+  var sb2 = pos%8;
+
+  return (buf[sb1]&(1<<sb2))?1:0;
+}
+
+function getbitfield(buf, begin, length){
+  length = length || 8;
+  var v = 0;
+  for(var i=0;i<length;i++){
+    v|= bitat(buf, begin+i)<<i;
+  }
+  if(v<0) v += 0x100000000;
+  return v; //for very long number, might have to use string instead
+}
+
+function setbitfield(buf, value, begin, length){
+  for(var i=0;i<length;i++){
+    var bit = (value&(1<<i))?1:0;
+    var pos = begin+i;
+    var sb1 = Math.floor(pos/8);
+    var sb2 = pos%8;
+    buf[sb1]&=~(bit<<sb2);
+    buf[sb1]|=(bit<<sb2);
+  }
+}
+
+function endian(n, bytes){
+  bytes = bytes||4;
+  var v = 0;
+  for(var i=0;i<bytes;i++){
+    var b = n&0xff;
+    v |= b<< 8*(bytes-i-1);
+    n>>=8;
+  }
+  return v;
+}
+
+function cleanupstruct(o){
+  if(typeof(o)!='object'){
+    return o;
+  }
+  if(o instanceof Array){
+    for(var i=0;i<o.length;i++){
+      o[i] = cleanupstruct(o[i]);
+    }
+    return o;
+  }
+  if(typeof(o.__value)!='undefined'){
+    return cleanupstruct(o.__value);
+  }else{
+    for(var k in o){
+      if(k=='__schema') continue;
+      o[k] = cleanupstruct(o[k]);
+    }
+    return o;
+  }
+}
+
+//TODO, check alignment
+function unpack(schema, buf, begin){
+  begin = begin||0;
+  var offset = 0;
+  var obj = {};
+  if(typeof(schema)=='number') {
+    obj.__value = getbitfield(buf, begin, Math.abs(schema));
+    obj.__size = Math.abs(schema);
+    if(schema<0){ //signed
+      obj.__value <<= 32+schema;
+      obj.__value >>= 32+schema;
+    }
+    return obj;
+  }else if(schema=='float'){
+      if((begin)%8!=0){
+        throw new Exception("float number alignment error");
+      }else{
+        obj.__value=buf.readFloatLE((begin)/8);
+        obj.__size=4*8;
+        return obj;
+      }
+  }else if(schema=='int'){
+    return unpack(-32, buf, begin);
+  }else if(schema=='unsigned' || schema=='unsigned int'){
+    return unpack(32, buf, begin);
+  }else if(schema=='unsigned short'){
+    return unpack(16, buf, begin);
+  }else if(schema=='short'){
+    return unpack(-16, buf, begin);
+  }else if(schema=='unsigned char'){
+    return unpack(8, buf, begin);
+  }else if(schema=='char'){
+    return unpack(-8, buf, begin);
+  }else if(typeof(schema)=='string' && schema.indexOf('string(')==0){
+    var l = parseInt(schema.substring(7));
+    var s= buf.slice(begin/8, begin/8+l).toString().split('\0')[0];
+    return {
+      __value: s,
+      __size:l*8
+    };
+  }else if(schema instanceof Array){
+    var a = [];
+    var sz = 0;
+    for(var i=0;i<schema[1];i++){
+      var o = unpack(schema[0], buf, begin+offset);
+      a.push(o);
+      offset += o.__size;
+      sz += o.__size;
+    }
+    obj.__value = a;
+    obj.__size = sz;
+    return obj;
+  }else if(typeof(schema)=='object'){
+    if(schema.__union){
+      var o = {};
+      var v = unpack(schema.__union, buf, begin);
+      offset += v.__size;
+      o.__union = v;
+      for(var k in schema){
+        if(k.indexOf('__')!=0){
+          var v = unpack(schema[k], buf, begin);
+          o[k] = v;
+        }
+      }
+      o.__size = o.__union.__size;
+      cleanupstruct(o);
+      o.__schema = schema;
+      return o;
+    }else{
+      var o = {};
+      var sz = 0;
+      for(var k in schema){
+        if(k.indexOf('__')!=0){
+          var v = unpack(schema[k], buf, begin+offset);
+          offset += v.__size;
+          o[k] = v;
+          sz += v.__size;
+        }
+      }
+      o.__size = sz;
+      cleanupstruct(o);
+      o.__schema = schema;
+      return o;
+    }
+  }else{
+    //should ot be possible;
+    throw new Exception("unknown schema: " + schema);
+  }
+}
+
+var pos = 0;
+var mpfheader = unpack(PATHFINDHEADER, mpf, 0);
+
+pos  = mpfheader.nodeoffsets;
+var mpfnodeoffsets = [];
+for(var i=0;i<mpfheader.numnodes;i++,pos+=2){
+  var no = mpf.readUInt16LE(pos);
+  mpfnodeoffsets.push(no);
+}
+var mpfnodes = [];
+var mpfbranches = [];
+for(var i=0;i<mpfheader.numnodes;i++){
+  pos = mpfnodeoffsets[i]*4; 
+  var node = unpack(PATHFINDNODE, mpf, pos*8);
+  mpfnodes.push(node);
+  var branches = [];
+  var bp = pos*8 + node.__size;
+  for(var j=0;j<node.numbranches;j++){
+    var br = unpack(PATHFINDBRANCH, mpf, bp);
+    branches.push(br);
+    bp+=br.__size;
+  }
+  mpfbranches.push(branches);
+}
+
+pos  = mpfheader.eventoffsets;
+var mpfeventoffsets = [];
+for(var i=0;i<mpfheader.numevents;i++,pos+=2){
+  var ev = mpf.readUInt16LE(pos);
+  mpfeventoffsets.push(ev);
+}
+var mpfevents = [];
+var mpfactions = [];
+for(var i=0;i<mpfheader.numevents;i++){
+  pos = mpfeventoffsets[i]*4; 
+  var event = unpack(PATHEVENT , mpf, pos*8);
+  mpfevents.push(event);
+  var actions = [];
+  var ap = pos*8 + event.__size;
+  for(var j=0;j<event.numactions;j++){
+    var ac = unpack(PATHACTION , mpf, ap);
+    actions.push(ac);
+    ap+=ac.__size;
+  }
+  mpfactions.push(actions);
+}
+
+pos  = mpfheader.namedvars;
+var mpfnamedvars = [];
+var vp = 0;
+for(var i=0;i<mpfheader.numnamedvars;i++){
+  var nv = unpack(PATHNAMEDVAR , mpf, pos*8+vp);
+  mpfnamedvars.push(nv);
+  vp+=nv.__size;
+}
+
+pos  = mpfheader.noderouters;
+var mpfnoderouters = [];
+for(var i=0;i<mpfheader.numrouters+1;i++){
+  var ro = mpf.readUInt32LE(pos+i*4);
+  mpfnoderouters.push(ro);
+}
+var mpfrouters = [];
+for(var i=0;i<mpfheader.numrouters;i++){
+  pos = mpfnoderouters[i]*4; 
+  var router = [];
+  var count = (mpfnoderouters[i+1]-mpfnoderouters[i])*2;
+  for(var j=0;j<count;j++){
+    router.push(mpf.readUInt16LE(pos+j*2));
+  }
+  mpfrouters.push(router);
+}
+
+pos  = mpfheader.trackoffsets ;
+var mpftrackoffsets = [];
+for(var i=0;i<mpfheader.numtracks;i++,pos+=4){
+  var tr = mpf.readUInt32LE(pos);
+  mpftrackoffsets.push(tr);
+}
+var mpftrackinfos = [];
+for(var i=0;i<mpfheader.numtracks;i++){
+  pos = mpftrackoffsets[i]*4; 
+  var trackinfo = unpack(PATHTRACKINFO , mpf, pos*8);
+  mpftrackinfos.push(trackinfo);
+}
+
+pos  = mpfheader.sampleoffsets;
+var mpfsamples = [];
+var musheaders = []
+var numsamples = 0;
+//peek muf files 
+for(var i=0;i<mpfheader.numtracks;i++){
+  var musbuf = Buffer.alloc(128);
+  var musf = fs.openSync(path + musfiles[i], 'r');
+  fs.readSync(musf, musbuf, 0, musbuf.length);
+  fs.closeSync(musf);
+  var musheader = unpack(PATHMUSHEADER , musbuf, 0);
+  musheaders.push(musheader);
+  numsamples += musheader.numsamples;
+}
+
+//var numsamples = (mpfheader.mapfilelen - mpfheader.sampleoffsets)/8; //8 bytes struct
+var sp = 0;
+for(var i=0;i<numsamples;i++){
+  var sample = unpack(PATHFINDSAMPLE , mpf, pos*8+sp);
+  mpfsamples.push(sample);
+  sp+=sample.__size;
+}
+
+var mpfobj = {};
+var newmpfobj = {header:{}};
+mpfobj.header = mpfheader;
+mpfobj.nodeoffsets = mpfnodeoffsets;
+mpfobj.nodes = mpfnodes;
+mpfobj.branches = mpfbranches;
+mpfobj.eventoffsets = mpfeventoffsets;
+mpfobj.events = mpfevents;
+mpfobj.actions = mpfactions;
+mpfobj.namedvars = mpfnamedvars;
+mpfobj.noderouters = mpfnoderouters;
+mpfobj.routers = mpfrouters;
+mpfobj.trackoffsets = mpftrackoffsets;
+mpfobj.trackinfos = mpftrackinfos;
+mpfobj.numsamples = numsamples;
+mpfobj.samples = mpfsamples;
+
+function dumpfile(inf, outf, begin, length){
+  var tempbuf = Buffer.alloc(length);
+  var infh = fs.openSync(inf, 'r');
+  fs.readSync(infh, tempbuf, 0, length, begin);
+  fs.closeSync(infh);
+  var outfh = fs.openSync(outf, 'w');
+  fs.writeSync(outfh, tempbuf, 0, length);
+  fs.closeSync(outfh);
+}
+
+var muses = [];
+for(var i=0;i<mpfheader.numtracks;i++){
+  var musbuf = Buffer.alloc(musheaders[i].numsamples * (28 + 8) + musheaders[i].__size/8 + 128); //add 128 bytes just to be safe
+  var muspath = path + musfiles[i];
+  var musf = fs.openSync(muspath, 'r');
+  fs.readSync(musf, musbuf, 0, musbuf.length);
+  fs.closeSync(musf);
+  var nodeoffsets = [];
+  var snrinfos = [];
+  var pos = 0;
+  for(var j=0;j<musheaders[i].numsamples;j++){
+    var mnode = unpack(PATHNODEOFFSETS , musbuf, musheaders[i].__size+pos);
+    nodeoffsets.push(mnode);
+    pos += mnode.__size;
+    var snr = unpack(MYSNRSTRUCT , musbuf, mnode.snroffset*16*8);
+    snr.__samplerate = endian(snr.sampleratebe,2);
+    snr.__numsamples = endian(snr.numsamplesbe,3);
+    snr.__duration = Math.floor(snr.__numsamples / snr.__samplerate * 1000);
+    snrinfos.push(snr);
+  }
+  var musobj = {};
+  musobj.header = musheaders[i];
+  musobj.nodeoffsets = nodeoffsets;
+  musobj.path = musfiles[i];
+  musobj.snrinfos = snrinfos;
+  muses.push(musobj);
+}
+
+
+//STUB
+function pack(obj, buf, offset){
+  var schema = obj.__schema;
+  for(var k in schema){
+
+  }
+}
+
+function rewritempfsamples(newpath){
+  newpath = newpath || path + 'pc.0.mpf';
+  var outfh = fs.openSync(newpath, 'w');
+  fs.writeSync(outfh, mpf, 0, mpf.length);
+  fs.closeSync(outfh);
+}
+
+function writemusfiles(){
+
+  parsenodes();
+  parseevents();
+  parsetracks();
+  //pc.mpf
+  var newmpf = path + mpfpath.substring(0, mpfpath.length-4)+'.0.mpf';
+  var newsamples = [];
+  var startingsample = 0;
+  for(var index=0;index<newmpfobj.header.numtracks;index++){
+    //musobj as a template
+    // currently, only the first mus (index=0) can be modified
+    var musobj = muses[index];
+    var oldpath = path + musobj.path;
+    var newpath = path + musobj.path.substring(0, musobj.path.length-4)+'.0.mus';
+    /*
+  var PATHMUSHEADER = {
+      checksum: -32,
+      numsamples: -32,
+      reserved: [-8,32]
+  };
+    */
+    var numsamples = 0;
+    for(var i=0;;i++){
+      try{fs.accessSync(oldpath + '.files/'+i+'.snr', fs.constants.F_OK);}catch(ex){
+        numsamples = i;
+        break;
+      }
+    }
+    var outfh = fs.openSync(newpath, 'w');
+    var offset = 0;
+    var tempbuf = Buffer.alloc(musobj.header.__size/8);
+    tempbuf.writeInt32LE(musobj.header.checksum, 0);
+    tempbuf.writeInt32LE(numsamples, 4);
+    for(var i=0;i<musobj.header.reserved.length;i++){
+      tempbuf.writeInt8(musobj.header.reserved[i], 8+i);
+    }
+    fs.writeSync(outfh, tempbuf, 0, tempbuf.length, offset);
+    offset += tempbuf.length;
+    var snroffset = musobj.nodeoffsets[0].snroffset;
+    var snsoffset = musobj.nodeoffsets[0].snsoffset;
+    tempbuf = Buffer.alloc(musobj.nodeoffsets[0].__size/8);
+    newmpfobj.trackinfos[index].startingsample = startingsample;
+    startingsample += numsamples;
+    for(var i=0;i<numsamples;i++){
+      /*
+      nodechecksum: 32,
+      index: 16,
+      subindex: 16,
+      snroffset: 32,
+      snsoffset: 32,
+      snrbytes: 32,
+      snsbytes: 32,
+      gstream: 32
+      */
+      var snr = fs.readFileSync(oldpath + '.files/' + i + '.snr');
+      var sns = fs.readFileSync(oldpath + '.files/' + i + '.sns');
+      var sample = {offset:snsoffset, duration:Math.floor((snr.readUInt32BE(4)-0x40000000)*1000/snr.readUInt16BE(2))};
+      newsamples.push(sample);
+
+      tempbuf.writeUInt32LE(crc32(sns), 0);
+      tempbuf.writeUInt16LE(i, 4);
+      tempbuf.writeUInt16LE(0, 6);
+      tempbuf.writeUInt32LE(snroffset, 8);
+      tempbuf.writeUInt32LE(snsoffset, 12);
+      tempbuf.writeUInt32LE(snr.length, 16);
+      tempbuf.writeUInt32LE(sns.length, 20);
+      tempbuf.writeUInt32LE(0, 24);
+      fs.writeSync(outfh, tempbuf, 0, tempbuf.length, offset);
+      offset += tempbuf.length;
+      fs.writeSync(outfh, snr, 0, snr.length, snroffset*16);
+      fs.writeSync(outfh, sns, 0, sns.length, snsoffset*128);
+      snroffset += Math.ceil(snr.length/16);
+      snsoffset += Math.ceil(sns.length/128);
+    }
+    fs.closeSync(outfh);
+  }
+
+  newmpfobj.samples = newsamples;
+
+  /*
+  header
+  nodeoffsets
+  nodes, branches 
+  eventoffsets 
+  events,actions
+  namedvars
+  noderouters 
+  routers
+  trackoffsets 
+  trackinfos
+  sampleoffsets 
+  */
+  //calc offsets
+  newmpfobj.header.nodeoffsets = mpfobj.header.__size/8;
+  var nodeoffset0 = newmpfobj.header.nodeoffsets + newmpfobj.header.numnodes*2;
+  nodeoffset0 = Math.ceil(nodeoffset0/4);
+  for(var i=0;i<newmpfobj.header.numnodes;i++){
+    newmpfobj.nodeoffsets[i] += nodeoffset0;
+  }
+  newmpfobj.header.nodedata = nodeoffset0*4;//_nodedatasize
+  newmpfobj.header.eventoffsets = newmpfobj.header.nodedata + newmpfobj.header._nodedatasize;
+  var eventoffset0 = newmpfobj.header.eventoffsets + newmpfobj.header.numevents*2;
+  eventoffset0 = Math.ceil(eventoffset0/4);
+  for(var i=0;i<newmpfobj.header.numevents;i++){
+    newmpfobj.eventoffsets[i] += eventoffset0;
+  }
+  newmpfobj.header.eventdata = eventoffset0*4;//_eventdatasize
+  newmpfobj.header.namedvars = newmpfobj.header.eventdata + newmpfobj.header._eventdatasize;
+  newmpfobj.header.noderouters = newmpfobj.header.namedvars + mpfobj.namedvars[0].__size/8*newmpfobj.header.numnamedvars;
+  var routeroffset0 = newmpfobj.header.noderouters + newmpfobj.header.numrouters*4+4;
+  routeroffset0 = Math.ceil(routeroffset0/4);
+  for(var i=0;i<newmpfobj.header.numrouters+1;i++){
+    newmpfobj.noderouters[i] += routeroffset0;
+  }
+  newmpfobj.header.trackoffsets = newmpfobj.noderouters[newmpfobj.header.numrouters]*4;
+  var trackoffset0 = newmpfobj.header.trackoffsets + newmpfobj.header.numtracks*4;
+  trackoffset0 = Math.ceil(trackoffset0/4);
+  for(var i=0;i<newmpfobj.header.numtracks;i++){
+    newmpfobj.trackoffsets[i] += trackoffset0;
+  }
+  newmpfobj.header.trackinfos = trackoffset0*4;
+  newmpfobj.header.sampleoffsets = newmpfobj.header.trackinfos + mpfobj.trackinfos[0].__size/8*newmpfobj.header.numtracks;
+  newmpfobj.header.mapfilelen = newmpfobj.header.sampleoffsets + mpfobj.samples[0].__size/8 * newsamples.length;
+  
+  outfh = fs.openSync(newmpf, 'w');
+  var pos = 0;
+  var offset = 0;
+  var newheader = newmpfobj.header, oldheader = mpfobj.header;
+  var tempb = Buffer.alloc(oldheader.__size/8);
+  function _wb(_old, _new, k,l){
+    var v = _new[k]==undefined?_old[k] : _new[k];
+    setbitfield(tempb, v, pos, l);pos+=l;
+  }
+  function _wb1(k,l){
+    _wb(oldheader,newheader, k,l);
+  }
+  _wb1('id',32);
+  _wb1('majorRev',8);
+  _wb1('minorRev',8);
+  _wb1('release',8);
+  _wb1('prerelease',8);
+  _wb1('saveIncrement',16);
+  _wb1('generateID',16);
+  _wb1('projectID',8);
+  _wb1('numtracks',8);
+  _wb1('numsections',8);
+  _wb1('numevents',8);
+  _wb1('numrouters',8);
+  _wb1('numnamedvars',8);
+  _wb1('numnodes',16);
+  _wb1('nodeoffsets',32);
+  _wb1('nodedata',32);
+  _wb1('eventoffsets',32);
+  _wb1('eventdata',32);
+  _wb1('namedvars',32);
+  _wb1('noderouters',32);
+  _wb1('trackoffsets',32);
+  _wb1('trackinfos',32);
+  _wb1('sampleoffsets',32);
+  _wb1('mapfilelen',32);
+  fs.writeSync(outfh, tempb, 0, tempb.length, offset);
+  
+  offset = newheader.nodeoffsets;
+  tempb = Buffer.alloc(newheader.numnodes*2);
+  for(var i=0;i<newheader.numnodes;i++){
+    tempb.writeUInt16LE(newmpfobj.nodeoffsets[i], i*2);
+  }
+  fs.writeSync(outfh, tempb, 0, tempb.length, offset);
+
+  offset = newheader.nodedata;
+  for(var i=0;i<newheader.numnodes;i++){
+    var newnode = newmpfobj.nodes[i];
+    var v,l;
+    pos=0;
+/*
+    int index : 16;
+    unsigned int trackID : 5;
+    unsigned int sectionID : 6;
+    int repeat : 5;
+    unsigned int routerID : 12;
+    unsigned int numbranches : 5;
+    unsigned int controller : 3;
+    unsigned int beats : 4;
+    unsigned int bars : 8;
+    unsigned int partID : 16;
+    unsigned int synchevery : 4;
+    unsigned int synchoffset : 4;
+    unsigned int notes : 4;
+    unsigned int synch : 2;
+    unsigned int channelbranching : 1;
+    unsigned int unused : 1;
+    PATHNODEEXTRA extra;
+*/
+    tempb = Buffer.alloc(mpfobj.nodes[0].__size/8);
+    v = newnode.index||0;l=16;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.trackID||0;l=5;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.sectionID||0;l=6;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.repeat||0;l=5;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.routerID||0;l=12;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.numbranches||0;l=5;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.controller||0;l=3;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.beats||0;l=4;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.bars||0;l=8;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.partID||0;l=16;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.synchevery||0;l=4;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.synchoffset||0;l=4;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.notes||0;l=4;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.synch||0;l=2;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = newnode.channelbranching||0;l=1;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = 0;l=1; //unused
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = 0;l=32; //extra
+    setbitfield(tempb, v, pos, l);pos+=l;
+    fs.writeSync(outfh, tempb, 0, tempb.length, offset);
+    offset += tempb.length;
+    for(var j=0;j<newnode.numbranches;j++){
+      tempb = Buffer.alloc(mpfobj.branches[0][0].__size/8);
+      var br = newmpfobj.branches[i][j];
+      pos = 0;
+      v = br.controlmin||0;l=8;
+      setbitfield(tempb, v, pos, l);pos+=l;
+      v = br.controlmax||0;l=8;
+      setbitfield(tempb, v, pos, l);pos+=l;
+      v = br.dstnode||0;l=16;
+      setbitfield(tempb, v, pos, l);pos+=l;
+      fs.writeSync(outfh, tempb, 0, tempb.length, offset);
+      offset += tempb.length;
+    }
+  }
+
+  offset = newheader.eventoffsets;
+  tempb = Buffer.alloc(newheader.numevents*2);
+  for(var i=0;i<newheader.numevents;i++){
+    tempb.writeUInt16LE(newmpfobj.eventoffsets[i], i*2);
+  }
+  fs.writeSync(outfh, tempb, 0, tempb.length, offset);
+
+  offset = newheader.eventdata;
+  tempb = Buffer.alloc(newheader._eventdatasize);
+  events = newmpfobj.events;
+  pos = 0;
+  for(var i=0;i<events.length;i++){
+    var v;
+    //event
+    v = events[i].queued||0;
+    setbitfield(tempb, v, pos, 32);pos+=32;
+    v = events[i].expiry||0;
+    setbitfield(tempb, v, pos, 32);pos+=32;
+    v = events[i].lastact||0;
+    setbitfield(tempb, v, pos, 32);pos+=32;
+    v = events[i].eventID||0;
+    setbitfield(tempb, v, pos, 24);pos+=24;
+    v = events[i].numactions||0;
+    setbitfield(tempb, v, pos, 8);pos+=8;
+    v = events[i].currentaction||0;
+    setbitfield(tempb, v, pos, 8);pos+=8;
+    v = events[i].voices||0;
+    setbitfield(tempb, v, pos, 4);pos+=4;
+    v = events[i].priority||0;
+    setbitfield(tempb, v, pos, 4);pos+=4;
+    v = events[i].bumplower||0;
+    setbitfield(tempb, v, pos, 1);pos+=1;
+    v = events[i].beingFiltered||0;
+    setbitfield(tempb, v, pos, 1);pos+=1;
+    v = events[i].project||0;
+    setbitfield(tempb, v, pos, 3);pos+=3;
+    v = events[i].unused||0;
+    setbitfield(tempb, v, pos, 11);pos+=11;
+    //actions
+    for(var j=0;j<events[i].numactions;j++){
+      v = events[i].actions[j].track||0;
+      setbitfield(tempb, v, pos, 32);pos+=32;
+      v = events[i].actions[j].sectionID||0;
+      setbitfield(tempb, v, pos, 8);pos+=8;
+      v = events[i].actions[j].type||0;
+      setbitfield(tempb, v, pos, 7);pos+=7;
+      v = events[i].actions[j].done||0;
+      setbitfield(tempb, v, pos, 1);pos+=1;
+      v = events[i].actions[j].leftvaluetype||0;
+      setbitfield(tempb, v, pos, 2);pos+=2;
+      v = events[i].actions[j].rightvaluetype||0;
+      setbitfield(tempb, v, pos, 2);pos+=2;
+      v = events[i].actions[j].assess||0;
+      setbitfield(tempb, v, pos, 3);pos+=3;
+      v = events[i].actions[j].comparison||0;
+      setbitfield(tempb, v, pos, 3);pos+=3;
+      v = events[i].actions[j].indent||0;
+      setbitfield(tempb, v, pos, 3);pos+=3;
+      v = events[i].actions[j].unused||0;
+      setbitfield(tempb, v, pos, 3);pos+=3;
+      //act union
+      var oldpos = pos; //for the union 
+      if(events[i].actions[j].act.setval){
+        v = events[i].actions[j].act.setval.towhat||0;
+        setbitfield(tempb, v, pos, 16);pos+=16;
+        v = events[i].actions[j].act.setval.setwhat||0;
+        setbitfield(tempb, v, pos, 8);pos+=8;
+      }else if(events[i].actions[j].act.calc){
+        v = events[i].actions[j].act.calc.value||0;
+        setbitfield(tempb, v, pos, 8);pos+=8;
+        v = events[i].actions[j].act.calc.op||0;
+        setbitfield(tempb, v, pos, 8);pos+=8;
+        v = events[i].actions[j].act.calc.by||0;
+        setbitfield(tempb, v, pos, 16);pos+=16;
+      }else if(events[i].actions[j].act.only){
+        v = events[i].actions[j].act.only.value||0;
+        setbitfield(tempb, v, pos, 16);pos+=16;
+        v = events[i].actions[j].act.only.compareValue||0;
+        setbitfield(tempb, v, pos, 16);pos+=16;
+      }else if(events[i].actions[j].act.event){
+        v = events[i].actions[j].act.event.eventid||0;
+        setbitfield(tempb, v, pos, 24);pos+=24;
+      }else if(events[i].actions[j].act.waittime){
+        v = events[i].actions[j].act.waittime.millisecs||0;
+        setbitfield(tempb, v, pos, 16);pos+=16;
+        v = events[i].actions[j].act.waittime.lowest||0;
+        setbitfield(tempb, v, pos, 16);pos+=16;
+      }else if(events[i].actions[j].act.fade){
+        v = events[i].actions[j].act.fade.tovol||0;
+        setbitfield(tempb, v, pos, 8);pos+=8;
+        v = events[i].actions[j].act.fade.id||0;
+        setbitfield(tempb, v, pos, 7);pos+=7;
+        v = events[i].actions[j].act.fade.flip||0;
+        setbitfield(tempb, v, pos, 1);pos+=1;
+        v = events[i].actions[j].act.fade.ms||0;
+        setbitfield(tempb, v, pos, 16);pos+=16;
+      }else if(events[i].actions[j].act.branch){
+        v = events[i].actions[j].act.branch.node||0;
+        setbitfield(tempb, v, pos, 16);pos+=16;
+        v = events[i].actions[j].act.branch.ofsection||0;
+        setbitfield(tempb, v, pos, 8);pos+=8;
+        v = events[i].actions[j].act.branch.immediate||0;
+        setbitfield(tempb, v, pos, 1);pos+=1;
+      }
+      pos = oldpos+32;
+    }
+  }
+  fs.writeSync(outfh, tempb, 0, tempb.length, offset);
+
+  offset = newheader.namedvars;
+  for(var i=0;i<newheader.numnamedvars;i++){
+    tempb = Buffer.alloc(mpfobj.namedvars[0].__size/8);
+    var va = newmpfobj.namedvars[i];
+    tempb.asciiWrite(va.name);
+    tempb.writeInt32LE(va.value, 16);
+    fs.writeSync(outfh, tempb, 0, tempb.length, offset);
+    offset += tempb.length;
+  }
+
+  offset = newheader.noderouters;
+  tempb = Buffer.alloc(newheader.numrouters*4+4);
+  for(var i=0;i<newheader.numrouters+1;i++){
+    tempb.writeUInt32LE(newmpfobj.noderouters[i], i*4);
+  }
+  fs.writeSync(outfh, tempb, 0, tempb.length, offset);
+
+  offset = newmpfobj.noderouters[0]*4;
+  tempb = Buffer.alloc(newmpfobj.noderouters[newheader.numrouters]*4 - offset);
+  pos = 0;
+  for(var i=0;i<newheader.numrouters;i++){
+    var r = newmpfobj.routers[i];
+    for(var j=0;j<r.length;j++){
+      tempb.writeUInt16LE(r[j], pos);
+      pos += 2;
+    }
+  }
+  fs.writeSync(outfh, tempb, 0, tempb.length, offset);
+
+  offset = newheader.trackoffsets;
+  tempb = Buffer.alloc(newheader.numtracks*4);
+  for(var i=0;i<newheader.numtracks;i++){
+    tempb.writeUInt32LE(newmpfobj.trackoffsets[i], i*4);
+  }
+  fs.writeSync(outfh, tempb, 0, tempb.length, offset);
+
+  offset = newheader.trackinfos;
+  tempb = Buffer.alloc(mpfobj.trackinfos[0].__size*newheader.numtracks/8);
+  pos = 0;
+  for(var i=0;i<newheader.numtracks;i++){
+    var v,l;
+    var tr = newmpfobj.trackinfos[i];
+    v = tr.startingsample||0;l=32;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = tr.numsubbanks||0;l=16;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = tr.purgemode||0;l=16;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = tr.muschecksum||0;l=32;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = tr.maxaram||0;l=32;
+    setbitfield(tempb, v, pos, l);pos+=l;
+    v = tr.maxmram||0;l=32;
+    setbitfield(tempb, v, pos, l);pos+=l;
+  }
+  fs.writeSync(outfh, tempb, 0, tempb.length, offset);
+
+  offset = newheader.sampleoffsets;
+  tempbuf = Buffer.alloc(8);
+  for(var i=0;i<newsamples.length;i++){
+    tempbuf.writeUInt32LE(newsamples[i].offset);
+    tempbuf.writeUInt32LE(newsamples[i].duration,4);
+    fs.writeSync(outfh, tempbuf, 0, 8, offset + tempbuf.length*i);
+  }
+  fs.closeSync(outfh);
+
+}
+
+function dumpsnrandsns(){
+  for(var i=0;i<mpfheader.numtracks;i++){
+    var dumpdir = path + muses[i].path+'.files';
+    try{
+      fs.mkdirSync(dumpdir);
+    }catch(ex){}
+    for(var j=0;j<muses[i].header.numsamples;j++){
+      var info = muses[i].nodeoffsets[j];
+      dumpfile(path + muses[i].path, dumpdir + '/'+j+'.snr', info.snroffset*16, info.snrbytes);
+      dumpfile(path + muses[i].path, dumpdir + '/'+j+'.sns', info.snsoffset*128, info.snsbytes);
+    }
+  }
+}
+
+function printtracks(){
+  var ss = '';
+  ss += '[\n';
+  for(var i=0;i<mpfobj.header.numtracks;i++){
+    var tr = mpfobj.trackinfos[i];
+    ss += '\t{ path: "' +muses[i].path+ '", startingsample: ' + tr.startingsample + ', numsubbanks: ' + tr.numsubbanks + ', purgemode: ' + tr.purgemode + ', muschecksum: '+ tr.muschecksum + ', maxaram: ' + tr.maxaram + ', maxmram: ' + tr.maxmram + '},\n';
+  }
+  ss += ']\n';
+  fs.writeFileSync(path + 'tracks.txt', ss, 'utf-8');
+}
+
+function printevents(){
+  var str = fs.readFileSync(path + 'ra3music/pc/ra3music.h','utf-8');//or should it be ansi??
+  var lines = str.split(/[\r\n]+/g);
+  var ss = '';
+  for(var i=0;i<lines.length;i++){
+    lines[i] = lines[i].split(/[\s\t]+/g);
+  }
+  function findevent(num){
+    for(var i=0;i<lines.length;i++){
+      if(lines[i].length>=3 && eval(lines[i][2])==num){
+        return lines[i][1];
+      }
+    }
+    return '';
+  }
+  function op(o){
+    var operators = [' invalid_op_0 ', '+=', '-=', '*=', '/=', '%=', ' invalid_op_6 '];
+    return operators[o];
+  }
+  function cmp(o){
+    var operators = [' invalid_op_0 ', '==', '!=', '>', '<', '>=', '<=', ' invalid_op_7 '];
+    return operators[o];
+  }
+  function val(v){
+    if(v<mpfobj.namedvars.length){
+      return 'vars[\''+ mpfobj.namedvars[v].name + '\']';
+    }else {
+      return 'vars['+v+']';
+    }
+  }
+  function parseactionstring(a){
+    var s = '';
+    if(a.type==PATHACTIONTYPE.PATHACTION_SETVALUE){
+      if(a.leftvaluetype==PATHVALUETYPE.PATH_VALUE_VARIABLE){
+        s += val(a.act.setval.setwhat) + '=';
+      }else if(a.leftvaluetype==PATHVALUETYPE.PATH_VALUE_SPECIAL){
+        s += vk(PATHSPECIALVALUETYPE, a.act.setval.setwhat) + '=';
+      }else {
+        s += 'unknown_leftvaluetype_' + a.leftvaluetype + "=";
+      }
+      if(a.rightvaluetype==PATHVALUETYPE.PATH_VALUE_INTEGER){
+        s += a.act.setval.towhat;
+      }else if(a.rightvaluetype==PATHVALUETYPE.PATH_VALUE_SPECIAL){
+        s += vk(PATHSPECIALVALUETYPE, a.act.setval.towhat);
+      }else {
+        s += 'unknown_rightvaluetype_' + a.rightvaluetype;
+      }
+      return s;
+    }else if(a.type==PATHACTIONTYPE.PATHACTION_CALC){
+      if(a.leftvaluetype==PATHVALUETYPE.PATH_VALUE_VARIABLE){
+        s += val(a.act.calc.value);
+      }else{
+        s += 'unknown_leftvaluetype_' + a.leftvaluetype;
+      }
+      s += op(a.act.calc.op);
+      if(a.rightvaluetype==PATHVALUETYPE.PATH_VALUE_INTEGER){
+        s += a.act.calc.by;
+      }else{
+        s += 'unknown_rightvaluetype_' + a.rightvaluetype;
+      }
+      return s;
+    }else if(a.type==PATHACTIONTYPE.PATHACTION_EVENT){
+      s += 'call(' + findevent(a.act.event.eventid) + '_0x' + a.act.event.eventid.toString(16) + ')';
+      return s;
+    }else if(a.type==PATHACTIONTYPE.PATHACTION_WAITTIME){
+      s += 'wait('
+      if(a.rightvaluetype==PATHVALUETYPE.PATH_VALUE_INTEGER){
+        s += 'lowest=' + a.act.waittime.lowest + ', millisecs=' + a.act.waittime.millisecs;
+      }else if(a.rightvaluetype==PATHVALUETYPE.PATH_VALUE_SPECIAL){
+        s += 'lowest=' + a.act.waittime.lowest + ', millisecs=' + vk(PATHSPECIALVALUETYPE, a.act.waittime.millisecs);
+      }else{
+        s += 'unknown_rightvaluetype_' + a.rightvaluetype;
+      }
+      s+=')';
+      return s;
+    }else if(a.type==PATHACTIONTYPE.PATHACTION_FADE ){
+      s += 'fade('
+      if(a.rightvaluetype==PATHVALUETYPE.PATH_VALUE_INTEGER){
+        s += 'tovol=' + a.act.fade.tovol + ', id=' + vk(PATHFADETYPE,a.act.fade.id) + ', flip=' + a.act.fade.flip + ', ms=' + a.act.fade.ms;
+      }else{
+        s += 'unknown_rightvaluetype_' + a.rightvaluetype;
+      }
+      s += ')';
+      return s;
+    }else if(a.type==PATHACTIONTYPE.PATHACTION_CONDITION){
+      if(a.assess==1){
+        s+='if(';
+      }else if(a.assess==2){
+        s+='else if(';
+      }else if(a.assess==3){
+        s+='else'
+      }else if(a.assess==4){
+        s+='end if'
+      }
+      if(a.assess==1||a.assess==2){
+        s += val(a.act.only.value);
+        s += cmp(a.comparison);
+        s += a.act.only.compareValue;
+        s += ')'
+      }
+      return s;
+    }else if(a.type==PATHACTIONTYPE.PATHACTION_BRANCHTO){
+      s += 'branchto(';
+      s += 'node=' + a.act.branch.node + ', ofsection=' + a.act.branch.ofsection + ', immediate=' + (a.act.branch.immediate?'true':'false');
+      s += ')';
+      return s;
+    }
+    return 'unknow action: ' + a.type;
+  }
+
+  function trackname(t){
+    if(t==0x11000001) return ' #0';
+    if(t==0x11000002) return ' #1';
+    return '';
+  }
+
+  ss += "vars: {\n";
+  for(var i=0;i<mpfobj.namedvars.length;i++){
+    ss += '\t' + mpfobj.namedvars[i].name + ': ' + mpfobj.namedvars[i].value + ',\n'; 
+  }
+  ss +="},\n"
+
+  for(var i=0;i<mpfobj.events.length;i++){
+    //console.log(findevent(mpfobj.events[i].eventID), mpfobj.events[i].eventID.toString('16'));
+    ss += "event: {\n\teventID: " + findevent(mpfobj.events[i].eventID|0x1000000) + "_0x" + mpfobj.events[i].eventID.toString(16) + ',\n';
+    ss += "\tactions:[\n";
+    for(var j=0;j<mpfobj.actions[i].length;j++){
+      //ss += "\t\t{\n\t\ttrack: " + findevent(mpfobj.actions[i][j].track) + ",\n";
+      ss += "\t\t" + parseactionstring(mpfobj.actions[i][j]) + trackname(mpfobj.actions[i][j].track) +"\n";
+      //ss += "\t\t},\n";
+    }
+    ss += "\t],\n";
+    ss += "},\n";
+  }
+
+  fs.writeFileSync(path + 'events.txt', ss, 'utf-8');
+}
+
+function printnodeinfos(){
+  var ss = '';
+  for(var i=0;i<mpfobj.nodes.length;i++){
+    //node
+    var nd = mpfobj.nodes[i];
+    ss += '{index: ' + nd.index;
+    ss += ', trackID: ' + nd.trackID;
+    ss += ', sectionID: ' + nd.sectionID;
+    ss += ', repeat: ' + nd.repeat;
+    ss += ', routerID: ' + nd.routerID;
+    ss += ', numbranches: ' + nd.numbranches;
+    //ss += ', controller: ' + nd.controller;
+    ss += ', beats: ' + nd.beats;
+    ss += ', bars: ' + nd.bars;
+    ss += ', partID: ' + nd.partID;
+    //ss += ', synchevery: ' + nd.synchevery;
+    //ss += ', synchoffset: ' + nd.synchoffset;
+    ss += ', notes: ' + nd.notes;
+    //ss += ', synch: ' + nd.synch;
+    //ss += ', channelbranching: ' + nd.channelbranching;
+    ss += '}, //'+i+'\n';
+    //branches
+    for(var j=0;j<nd.numbranches;j++){
+      var br = mpfobj.branches[i][j];
+      ss += '\t{controlmin: ' + br.controlmin;
+      ss += ', controlmax: ' + br.controlmax;
+      ss += ', dstnode: ' + br.dstnode;
+      ss += '},\n';
+    }
+  }
+  for(var i=0;i<mpfobj.routers.length;i++){
+    var rt = mpfobj.routers[i];
+    ss += '[' +rt + '], //'+i+'\n';
+  }
+  ss = '[\n' + ss + ']\n';
+  fs.writeFileSync(path + 'nodes.txt', ss, 'utf-8');
+}
+
+function parsetracks(){
+  var text = fs.readFileSync(path + 'tracks.txt', 'utf-8');
+  var objs = eval(text);
+  var trackoffsets = [];
+  newmpfobj.trackinfos = [];
+  var offset = 0;
+  for(var i=0;i<objs.length;i++){
+    if(objs[i]){
+      newmpfobj.trackinfos.push(objs[i]);
+      trackoffsets.push(offset);
+      offset += mpfobj.trackinfos[0].__size/8/4;
+    }
+  }
+  newmpfobj.header.numtracks = trackoffsets.length;
+  newmpfobj.trackoffsets = trackoffsets;
+}
+
+function parsenodes(){
+  var text = fs.readFileSync(path + 'nodes.txt', 'utf-8');
+  var nodesize=mpfobj.nodes[0].__size/8;
+  var branchsize=mpfobj.branches[0][0].__size/8;
+  var objs = eval(text);
+  var nodeoffsets = [];
+  var nodes = [];
+  var branches = [];
+  var routers = [];
+  var noderouters = [];
+  var offset = 0;
+  var routeroffset = 0;
+  for(var i=0;i<objs.length;i++){
+    var o = objs[i];
+    if(typeof(o)=='object' && typeof(o.index)!='undefined'){ // this is a node
+      nodes.push(o);
+      branches.push([]);
+      nodeoffsets.push(Math.round(offset));
+      offset += nodesize/4;
+    }else if(typeof(o)=='object' && typeof(o.dstnode)!='undefined'){ // this is a branch
+      branches[branches.length-1].push(o);
+      offset += branchsize/4;
+    }else if(o instanceof Array){ //this is a router
+      routers.push(o);
+      noderouters.push(routeroffset);
+      routeroffset += o.length*2/4;
+    }
+  }
+  noderouters.push(routeroffset); 
+  newmpfobj.nodes = nodes;
+  newmpfobj.branches = branches;
+  newmpfobj.noderouters = noderouters;
+  newmpfobj.routers = routers
+  newmpfobj.nodeoffsets = nodeoffsets;
+  newmpfobj.header.numnodes = nodes.length;
+  newmpfobj.header.numrouters = routers.length;
+  newmpfobj.header._nodedatasize = offset*4;
+}
+
+function parseevents(){
+  var namedvars = [];
+  var events = [];
+  var actions = [];
+  var eventoffsets = [];
+  var eventoffset = 0;
+  var currentevent;
+  var ac = 0;
+  var eventsize = mpfobj.events[0].__size/8; //16
+  var actionsize = mpfobj.actions[0][0].__size/8; //12
+  var text = fs.readFileSync(path + 'events.txt', 'utf-8');
+  var lines = text.split(/[\r\n]+/g);
+  var varbegin = false, eventbegin = false, varset = false, actionbegin=false;
+  function eid(str){
+    var m = str.match(/\w*_(0x[0-9a-f]+)/i);
+    if(m){
+      return eval(m[1]);
+    }
+    return -1;
+  }
+  function gettrack(t){
+    if(typeof(t)=='undefined') return -1;
+    t = parseInt(t);
+    if(t==0){
+      return 0x11000001;
+    }else if(t==1){
+      return 0x11000002;
+    }else if(t==-1){
+      return -1;
+    }else{
+      return t;//new track?
+    }
+  }
+  function vi(n){
+    if(n.charAt(0)=='"'||n.charAt(0)=="'"){
+      n = n.substring(1,n.length-1);
+      var i=0;
+      for(var i=0;i<namedvars.length;i++){
+        if(namedvars[i].name==n){
+          return i;
+        }
+      }
+      throw new Error('named variable '+n+' not found');
+    }else{
+      return parseInt(n);
+    }
+  }
+  function opi(o){
+    var ops = {
+    '+=':1,
+    '-=':2,
+    '*=':3,
+    '/=':4,
+    '%=':5
+    };
+    return ops[o];
+  }
+  function cmpi(o){
+    var ops = {
+    '==':1,
+    '!=':2,
+    '>':3,
+    '<':4,
+    '>=':5,
+    '<=':6
+    };
+    return ops[o];
+  }
+  function isnum(o){
+    return !!o.match(/^-?[0-9]/);
+  }
+  function parseaction(astr){
+    var m;
+    var action = {act:{}};
+    action.astr=astr;
+    if(m=astr.match(/^\s*vars\s*\[\s*([^\s]+)\s*\]\s*=\s*(-?\w+)\s*(#\s*(-?\w+)\s*)?/i)) { //vars['player']=1 #0
+      action.track = gettrack(m[4]);
+      action.type = PATHACTIONTYPE.PATHACTION_SETVALUE;
+      action.act.setval={};
+      action.leftvaluetype = PATHVALUETYPE.PATH_VALUE_VARIABLE;
+      action.act.setval.setwhat = vi(m[1]);
+      if(!isnum(m[2])){
+        action.rightvaluetype = PATHVALUETYPE.PATH_VALUE_SPECIAL;
+        action.act.setval.towhat = PATHSPECIALVALUETYPE[m[2]];
+      }else{
+        action.rightvaluetype = PATHVALUETYPE.PATH_VALUE_INTEGER;
+        action.act.setval.towhat = parseInt(m[2]);
+      }
+    }else if(m=astr.match(/^\s*(\w+)\s*=\s*(-?\w+)\s*(#\s*(-?\w+)\s*)?/i)){ //PATH_VOLUME=100
+      action.track = gettrack(m[4]);
+      action.type = PATHACTIONTYPE.PATHACTION_SETVALUE;
+      action.act.setval={};
+      action.leftvaluetype = PATHVALUETYPE.PATH_VALUE_SPECIAL;
+      action.act.setval.setwhat = PATHSPECIALVALUETYPE[m[1]];
+      if(!isnum(m[2])){
+        action.rightvaluetype = PATHVALUETYPE.PATH_VALUE_SPECIAL;
+        action.act.setval.towhat = PATHSPECIALVALUETYPE[m[2]];
+      }else{
+        action.rightvaluetype = PATHVALUETYPE.PATH_VALUE_INTEGER;
+        action.act.setval.towhat = parseInt(m[2]);
+      }
+    }else if(m=astr.match(/^\s*vars\s*\[\s*([^\s]+)\s*\]\s*([\%\+\-\*\/]=)\s*(-?\w+)\s*(#\s*(-?\w+)\s*)?/i)){ //vars['shelltrack']+=1 #0
+      action.track = gettrack(m[5]);
+      action.type = PATHACTIONTYPE.PATHACTION_CALC;
+      action.act.calc={};
+      action.leftvaluetype = PATHVALUETYPE.PATH_VALUE_VARIABLE;
+      action.rightvaluetype = PATHVALUETYPE.PATH_VALUE_INTEGER;
+      action.act.calc.value = vi(m[1]);
+      action.act.calc.op = opi(m[2]);
+      action.act.calc.by = parseInt(m[3]);
+    }else if(m=astr.match(/^\s*(((else|end)\s+)?if\s*(\(\s*vars\s*\[\s*([^\s]+)\s*\]\s*(==|!=|>=|<|>)\s*(-?\w+)\))?|else)\s*(#\s*(-?\w+)\s*)?/i)){ // if
+      action.track = gettrack(m[9]);
+      action.type = PATHACTIONTYPE.PATHACTION_CONDITION;
+      action.act.only={};
+      if(m[1]=='else'){
+        action.assess=3;
+      }else if(m[3]=='end'){
+        action.assess=4;
+      }else if(m[3]=='else'){
+        action.assess=2;
+      }else{
+        action.assess=1;
+      }
+      if(action.assess<=2){
+        action.leftvaluetype = PATHVALUETYPE.PATH_VALUE_VARIABLE;
+        action.rightvaluetype = PATHVALUETYPE.PATH_VALUE_INTEGER;
+        action.comparison = cmpi(m[6]);
+        action.act.only.value = vi(m[5]);
+        action.act.only.compareValue = parseInt(m[7]);
+      }else{
+        action.leftvaluetype = 0;
+        action.rightvaluetype = 0;
+        action.comparison = 0;
+        action.act.only.value = 0;
+        action.act.only.compareValue = 0;
+      }
+    }else if(m=astr.match(/^\s*call\s*\(\s*(\w+)?_([0-9]\w*)\s*\)\s*(#\s*(-?\w+)\s*)?/i)){ //call(PATH_EVENT_S_S02KrasnaSickle1_0xb36e60) #0
+      //not used in ra3
+      action.track = gettrack(m[4]);
+      action.type = PATHACTIONTYPE.PATHACTION_EVENT;
+      action.act.event={};
+      action.leftvaluetype = PATHVALUETYPE.PATH_VALUE_INTEGER;
+      action.rightvaluetype = 0;
+      action.act.event.eventid = parseInt(m[3]);
+    }else if(m=astr.match(/^\s*wait\s*\(\s*(lowest\s*=)?\s*(-?\w+)\s*,\s*(millisecs\s*=)?\s*(-?\w+)\s*\)\s*(#\s*(-?\w+)\s*)?/i)){ //wait(lowest=0, millisecs=1002) #0
+      action.track = gettrack(m[6]);
+      action.type = PATHACTIONTYPE.PATHACTION_WAITTIME;
+      action.act.waittime={};
+      action.leftvaluetype = 0;
+      action.act.waittime.lowest = parseInt(m[2]);
+      if(isnum(m[4])){
+        action.rightvaluetype = PATHVALUETYPE.PATH_VALUE_INTEGER;
+        action.act.waittime.millisecs=parseInt(m[4]);
+      }else{
+        action.rightvaluetype = PATHVALUETYPE.PATH_VALUE_SPECIAL;
+        action.act.waittime.millisecs=PATHSPECIALVALUETYPE[m[4]];
+      }
+    }else if(m=astr.match(/^\s*fade\s*\(\s*(tovol\s*=)?\s*(-?\w+)\s*,\s*(id\s*=)?\s*(-?\w+)\s*,\s*(flip\s*=)?\s*(-?\w+)\s*,\s*(ms\s*=)?\s*(-?\w+)\s*\)\s*(#\s*(-?\w+)\s*)?/i)){ //fade(tovol=0, id=PATH_FADE_LINEAR, flip=0, ms=1000) #0
+      action.track = gettrack(m[10]);
+      action.type = PATHACTIONTYPE.PATHACTION_FADE;
+      action.act.fade={};
+      action.leftvaluetype = 0;
+      action.rightvaluetype = PATHVALUETYPE.PATH_VALUE_INTEGER;
+      action.act.fade.tovol = parseInt(m[2]);
+      action.act.fade.id = PATHFADETYPE[m[4]];
+      action.act.fade.flip = eval(m[6])?'-1':'0';
+      action.act.fade.ms = parseInt(m[8]);
+    }else if(m=astr.match(/^\s*branchto\s*\(\s*(node\s*=)?\s*(-?\w+)\s*,\s*(ofsection\s*=)?\s*(-?\w+)\s*,\s*(immediate\s*=)?\s*(-?\w+)\s*\)\s*(#\s*(-?\w+)\s*)?/i)){ //branchto(node=1899, ofsection=-1, immediate=false) #1
+      action.track = gettrack(m[8]);
+      action.type = PATHACTIONTYPE.PATHACTION_BRANCHTO;
+      action.act.branch={};
+      action.leftvaluetype = PATHVALUETYPE.PATH_VALUE_INTEGER;
+      action.act.branch.node = parseInt(m[2]);
+      action.act.branch.ofsection = parseInt(m[4]);
+      action.act.branch.immediate = eval(m[6])?'-1':'0';
+      if(action.act.branch.node==-1 && action.act.branch.ofsection==-1 && action.act.branch.immediate==-1){
+        action.rightvaluetype = PATHVALUETYPE.PATH_VALUE_INTEGER;
+      }else{
+        action.rightvaluetype = 0;
+      }
+    }else{
+      console.log('unknown action line: ', astr);
+      return null;
+    }
+    return action;
+  }
+  for(var i=0;i<lines.length;i++){
+    if(!varset) {
+      var m = lines[i].match(/\s*vars\s*:\s*\{\s*/); //vars: {
+      if(m){
+        varbegin = true;
+        continue;
+      }
+    }
+    if(varbegin){
+      var m = lines[i].match(/\s*}\s*,\s*/); // },
+      if(m){
+        varbegin = false;
+        varset = true;
+        continue;
+      }
+      m = lines[i].match(/\s*(\w+)\s*:\s*([0-9][0-9]*)\s*,\s*/i); // player: 0,
+      if(m){
+        namedvars.push({name:m[1], value:eval(m[2])});
+        continue;
+      }
+    }
+    if(!eventbegin){
+      var m = lines[i].match(/\s*event\s*:\s*\{\s*/i); // event: {
+      if(m){
+        eventbegin = true;
+        currentevent = {actions:[],numactions:0};
+        actions.push(currentevent.actions);
+        events.push(currentevent);
+        eventoffsets.push(Math.round(eventoffset));//round it just in case
+        eventoffset += eventsize/4;
+        continue;
+      }
+    }else{
+      if(!actionbegin&&!currentevent.eventID){
+        var m = lines[i].match(/\s*eventID\s*:\s*(\w+)\s*,\s*/i); // eventID: PATH_EVENT_SetPlayerAllied_0xd9047,
+        if(m){
+          currentevent.eventID = eid(m[1]);
+          continue;
+        }
+      }
+      if(!actionbegin){
+        var m = lines[i].match(/\s*actions\s*:\s*\[\s*/i); // 	actions:[
+        if(m){
+          actionbegin = true;
+          continue;
+        }
+      }else{
+        var m = lines[i].match(/\s*]\s*,\s*/); // ],
+        if(m){
+          actionbegin = false;
+          continue;
+        }else{
+          var action = parseaction(lines[i]);
+          if(action){
+            currentevent.actions.push(action);
+            currentevent.numactions++;
+            eventoffset += actionsize/4;
+            ac++;
+          }
+        }
+      }
+      m = lines[i].match(/\s*}\s*,\s*/); // },
+      if(m){
+        eventbegin = false;
+        //just in-case
+        actionbegin = false;
+        continue;
+      }
+    }
+  }
+  //console.log(events, actions, eventoffsets);
+
+  /*
+  header
+  nodeoffsets
+  nodes, branches 
+  eventoffsets 
+  events,actions
+  namedvars
+  noderouters 
+  trackoffsets 
+  trackinfos
+  sampleoffsets 
+  */
+
+  newmpfobj.header.numevents = events.length;
+  newmpfobj.events = events;
+  newmpfobj.actions = actions;
+  newmpfobj.eventoffsets = eventoffsets;
+  newmpfobj.header.numnamedvars = namedvars.length;
+  newmpfobj.namedvars = namedvars
+  newmpfobj.header._eventdatasize = eventoffset*4;
+}
+    </script>
+  </body>
+</html>

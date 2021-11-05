@@ -1,0 +1,1870 @@
+vars: {
+	player: 0,
+	variation: 0,
+	shelltrack: 0,
+	a05incoming: 0,
+},
+event: {
+	eventID: PATH_EVENT_SetPlayerAllied_0xd9047,
+	actions:[
+		vars['player']=1 #0
+		vars['variation']=PATH_RANDOMSHORT #0
+		vars['variation']%=2 #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SetPlayerSoviet_0xa0ef03,
+	actions:[
+		vars['player']=0 #0
+		vars['variation']=PATH_RANDOMSHORT #0
+		vars['variation']%=2 #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SetPlayerJapan_0x8303a7,
+	actions:[
+		vars['player']=2 #0
+		vars['variation']=PATH_RANDOMSHORT #0
+		vars['variation']%=2 #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SetAdvantagePlayer_0xf7413a,
+	actions:[
+		if(vars['player']==0) #0
+		branchto(node=135, ofsection=-1, immediate=false) #0
+		else if(vars['player']==1) #0
+		branchto(node=460, ofsection=-1, immediate=false) #0
+		else if(vars['player']==2) #0
+		branchto(node=689, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=135, ofsection=-1, immediate=false) #0
+		end if
+	],
+},
+event: {
+	eventID: PATH_EVENT_SetAdvantageEnemy_0xff1a03,
+	actions:[
+		if(vars['player']==0) #0
+		branchto(node=112, ofsection=-1, immediate=false) #0
+		else if(vars['player']==1) #0
+		branchto(node=454, ofsection=-1, immediate=false) #0
+		else if(vars['player']==2) #0
+		branchto(node=680, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=112, ofsection=-1, immediate=false) #0
+		end if
+	],
+},
+event: {
+	eventID: PATH_EVENT_ResetAdvantage_0x81e44e,
+	actions:[
+		if(vars['player']==0) #0
+		branchto(node=92, ofsection=-1, immediate=false) #0
+		else if(vars['player']==1) #0
+		branchto(node=365, ofsection=-1, immediate=false) #0
+		else if(vars['player']==2) #0
+		branchto(node=651, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=92, ofsection=-1, immediate=false) #0
+		end if
+	],
+},
+event: {
+	eventID: PATH_EVENT_Base_0x8651bf,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=83, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_Threat1_0x23371e,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=974, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_Threat1_1_0x80f8c,
+	actions:[
+		branchto(node=911, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: _0x2a6701,
+	actions:[
+	],
+},
+event: {
+	eventID: PATH_EVENT_Combat_0xfde638,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		if(vars['player']==0) #0
+		branchto(node=92, ofsection=-1, immediate=false) #0
+		else if(vars['player']==1) #0
+		branchto(node=365, ofsection=-1, immediate=false) #0
+		else if(vars['player']==2) #0
+		branchto(node=651, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=92, ofsection=-1, immediate=false) #0
+		end if
+	],
+},
+event: {
+	eventID: PATH_EVENT_UpYoursSoviet_0x8d9aa6,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1116, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_UpYoursAllied_0x20e524,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1119, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_UpYoursEmpire_0x9ad2e1,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1122, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_MenuTrack_0xb9d554,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		if(vars['shelltrack']>3) #0
+		vars['shelltrack']=0 #0
+		end if
+		if(vars['shelltrack']==0) #0
+		branchto(node=9, ofsection=-1, immediate=false) #0
+		else if(vars['shelltrack']==1) #0
+		branchto(node=18, ofsection=-1, immediate=false) #0
+		else if(vars['shelltrack']==2) #0
+		branchto(node=0, ofsection=-1, immediate=false) #0
+		else if(vars['shelltrack']==3) #0
+		branchto(node=27, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=9, ofsection=-1, immediate=false) #0
+		end if
+		vars['shelltrack']+=1 #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_BriefingTrack_0x2671d4,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=33, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_CreditsTrack_0x1247e0,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=39, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_StatsLoseTrack_0x3a896f,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		if(vars['player']==0) #0
+		branchto(node=47, ofsection=-1, immediate=false) #0
+		else if(vars['player']==1) #0
+		branchto(node=71, ofsection=-1, immediate=false) #0
+		else if(vars['player']==2) #0
+		branchto(node=59, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=47, ofsection=-1, immediate=false) #0
+		end if
+	],
+},
+event: {
+	eventID: PATH_EVENT_StatsWinTrack_0x9d8959,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		if(vars['player']==0) #0
+		branchto(node=53, ofsection=-1, immediate=false) #0
+		else if(vars['player']==1) #0
+		branchto(node=77, ofsection=-1, immediate=false) #0
+		else if(vars['player']==2) #0
+		branchto(node=65, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=53, ofsection=-1, immediate=false) #0
+		end if
+	],
+},
+event: {
+	eventID: PATH_EVENT_Explore1_0x5cde83,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=83, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_BigReveal_0xe625ca,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=974, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: _0x558f90,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=89, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: _0xe3396f,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=83, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S01LeninIntro_0xe0df,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1126, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S01JapanFleet_0x777741,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1135, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S01Hermitage_0x47668e,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1138, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S01FakeReinforcements_0xd73285,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1141, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S02KrasnaIntro_0xef8592,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1144, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S02KrasnaIntro_0x5e0898,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1147, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S02KrasnaJapBase_0x9a8801,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1153, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S02KrasnaJapBase_0xc7699a,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=95, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S02KrasnaSickle1_0xb36e60,
+	actions:[
+		branchto(node=1891, ofsection=-1, immediate=false) #1
+	],
+},
+event: {
+	eventID: _0xba3c41,
+	actions:[
+	],
+},
+event: {
+	eventID: _0xbd0c5e,
+	actions:[
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S02KrasnaThreatMoment_0xd24932,
+	actions:[
+		branchto(node=1895, ofsection=-1, immediate=false) #1
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S04GenevaIntro_0xe60d21,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1156, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S04GenevaIntro_0x578107,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1396, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S04AlliesChrono_0xfb6672,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1604, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S04AlliesChrono_0x162e6,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1607, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S04KrukovTellsYouOff_0xacc615,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1613, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S04KrukovTellsYouOff_0x5090df,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1402, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S04Threat1_1_0xbd8f15,
+	actions:[
+		branchto(node=1402, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S05MykonosIntro_0x4ea75,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1159, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S05MykonosIntro_0xfeef13,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1162, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S05MykonosDownload_0x92b006,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1168, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S05MykonosDownload_0x3f16a7,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1171, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S05MykonosRecaptureDownload_0xb32ac0,
+	actions:[
+		branchto(node=1201, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S06IcelandIntro_0x51067c,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1231, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S06IcelandIntro_0xab0270,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1234, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S06Krukov_0x88f806,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1240, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S06Krukov_0xb1d713,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1243, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S06IcelandThreat1_1_0xa8bdb8,
+	actions:[
+		branchto(node=1234, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S06KrukovTraitor_0x3ce5e1,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1249, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S06KrukovTraitor_0x6104c4,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1243, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S06KrukovDefeated_0xfc5138,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1252, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S06KrukovDefeated_0x54c5ef,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1234, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S07FujiIntro_0x689a36,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1255, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S07FujiIntro_0xeb8f1d,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1258, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S07FujiRobot_0x4621b4,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1264, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S07FujiRobot_0xc534a3,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1267, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S07FujiThreat1_1_0x2812c,
+	actions:[
+		branchto(node=1282, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S07FujiThreat1_0xa208b2,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1273, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S08EasterIslandBuildUp_0x9fcc99,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1286, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S08EasterIslandEmissary_0x75f665,
+	actions:[
+		branchto(node=1319, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_Reward1Soviet_0x47a3f3,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1325, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A01BrightonIntro_0xbee04,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1674, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A01BrightonIntro_0x560c9d,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1677, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A01BrightonThreat_0x4e0532,
+	actions:[
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A01BrightonCombat_0x88bb02,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=365, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A01BrightonExplore_0x2e1bb0,
+	actions:[
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A01BrightonFirstWave2min_0x5209be,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1338, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A01BrightonFirstWave3min_0xee6d89,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1344, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A01BrightonWave2min_0x91fefe,
+	actions:[
+		branchto(node=1341, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A01BrightonWave3min_0x2d9959,
+	actions:[
+		branchto(node=1347, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A02CannesBegin_0xf7ea5e,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=83, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A02CannesSpotted_0xb5629a,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1378, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A02CannesSpotted_0xe882a5,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1382, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A02CannesExplosion_0xb273f1,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1393, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A02CannesExplosion_0x1fcd3e,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=89, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A03HeidelbergIntro_0x72eb50,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1396, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A03HeidelbergIronCurtainUp_0xd3488b,
+	actions:[
+		branchto(node=1899, ofsection=-1, immediate=false) #1
+		fade(tovol=0, id=PATH_FADE_LINEAR, flip=0, ms=1000) #0
+		wait(lowest=0, millisecs=1002) #0
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		PATH_VOLUME=100 #0
+		branchto(node=1408, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A03HeidelbergIronCutainDown_0x336722,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1402, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A04GibraltarIntro_0xf6df43,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1414, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A04GibraltarIntro_0x5e4b8a,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1417, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A04GibraltarExplore_0x57c56d,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1423, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A04Threat1_0xf77fd2,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=992, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A04Threat1_1_0x9efc92,
+	actions:[
+		branchto(node=927, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A06RushmoreBegin_0x3fa18,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=83, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A06RushmoreTowerDown_0x8e4f6,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		PATH_CONTROLLER=0 #0
+		branchto(node=1429, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A06RushmoreTowerDown_0xf4b38e,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		PATH_CONTROLLER=0 #0
+		branchto(node=1432, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A06SetSkirmishOn_0x62823c,
+	actions:[
+		PATH_CONTROLLER=100 #0
+		wait(lowest=0, millisecs=PATH_TIMETONEXTNODE) #0
+		branchto(node=1907, ofsection=-1, immediate=false) #1
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A06SetSkirmishOff_0x3ea296,
+	actions:[
+		PATH_CONTROLLER=0 #0
+		wait(lowest=0, millisecs=PATH_TIMETONEXTNODE) #0
+		branchto(node=1903, ofsection=-1, immediate=false) #1
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A06RushmoreChase_0x7b5480,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1504, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A09LeningradIntro_0x190c3f,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1516, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A09MicroMCVs_0x814001,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1519, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A09PremierEscapes_0xf39d3d,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1542, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A09PremierEscapes_0x5b09d6,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1558, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A09TMinus25Minutes_0x210b1d,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1525, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A09TMinus1Minute_0xc4afe,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1546, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A09Threat1_1_0x60772f,
+	actions:[
+		branchto(node=915, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J02Threat1_1_0x12285f,
+	actions:[
+		branchto(node=915, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J02Threat1_0x788d6c,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=980, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J02StalingradBegin_0xcdd3c4,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1552, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J02StalingradBegin_0x606b69,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1558, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J02StalingradStatueDown_0x1ce46,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1555, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J02StalingradStatueDown_0x763f49,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1558, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J02StalingradEmpireVictory_0x84d4a6,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1564, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J03OdessaIntro_0x2223a0,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1567, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J03OdessaIntro_0x93a87a,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1129, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J03OdessaShogun_0x83aab0,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1570, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J03OdessaShogun_0x79af68,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1573, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J03OdessaShogunRampage_0x821e63,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1579, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J01SovVillageIntro_0x7dd135,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1549, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J01SovVillageIntro_0xd067f8,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1129, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J01SovVillageStatueDown_0x39f42f,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1555, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J01SovVillageStatueDown_0x4e04be,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1558, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J01Threat1_0xf78ad5,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1585, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J01Threat1_1_0x259337,
+	actions:[
+		branchto(node=1600, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J07YokohamaIntro_0x421d68,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1851, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_JO7YokohamaIntro_0xcbe512,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1258, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J07YurikoCaptureMiniBase_0xf4a7aa,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1267, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J07YurikoCaptureMiniBases_0xa7e4f8,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=651, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J07BuildingsLost3_0xd09a6a,
+	actions:[
+		branchto(node=680, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J07BuildingsLost6_0xba6f41,
+	actions:[
+		branchto(node=1616, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J07Krukov_0x9c07fe,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1616, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J07Krukov_0xa528e3,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1616, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J07ReinforcementsArrive_0x826584,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1622, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J07ReinforcementsArrive_0xf594cf,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1267, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J07SovietNavyArrive_0xff5932,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1625, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J07SovietNavyArrive_0xc969df,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1625, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A08HavanaIntro_0x40d0b4,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1510, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A08RealAPOCTanks_0xbb4d90,
+	actions:[
+		fade(tovol=0, id=PATH_FADE_LINEAR, flip=0, ms=1000) #0
+		branchto(node=1911, ofsection=-1, immediate=false) #1
+		wait(lowest=0, millisecs=9000) #0
+		fade(tovol=100, id=PATH_FADE_LINEAR, flip=0, ms=2000) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A08FirstCombat_0x4c990f,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1628, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A08Kirovs_0x58d45,
+	actions:[
+		branchto(node=1631, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A08Kirovs_0x3cae1c,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1591, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A08KirovEscaping_0xe2dd1e,
+	actions:[
+		branchto(node=454, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A08KirovEscaping_0xbf3d43,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1637, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A08KirovIntercepted_0xf7edd7,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1634, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A08KirovIntercepted_0xc1dea4,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1637, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S09NYCIntro_0x968e74,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1591, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S09NYCExplore_0x4c9096,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1643, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S09RA2Moment_0xcf2c6e,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1649, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J04PearlHarborIntro_0xb92002,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1652, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J04PearlHarborIntro_0x8f2d61,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1655, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J04Threat1_0x178431,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1821, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J04Threat1_1_0xc5819,
+	actions:[
+		branchto(node=1821, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J04FleetArrive_0x86cd27,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1664, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J04FleetArrive_0x374121,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1655, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A07TokyoIntro_0xdb3405,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1668, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A07TokyoIntro_0xd9dc66,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1267, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A07Nanocores_0xb646d0,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1661, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A07Nanocores_0x3551c9,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1655, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A07Decimator_0xd62c25,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1671, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A07Decimator_0x553914,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1267, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A07Threat1_0x78786f,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1661, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A07Threat1_1_0xa946bc,
+	actions:[
+		branchto(node=1661, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J06SantaMonicaIntro_0xd2037,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1683, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J06SantaMonicaIntro_0x3b2d2e,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1510, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A05NorthSeaIntro_0x71c850,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1695, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_A05NorthSeaIntro_0x2c29b5,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1366, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A05NorthSeaBaseBuild_0x2f7c0,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1686, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A05NorthSeaExplore_0x6513df,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1417, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A05Threat1_0x5d7f9c,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1692, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A05Threat1_1_0x5c96bb,
+	actions:[
+		branchto(node=927, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A05Incoming_0xf307af,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #1
+		if(vars['a05incoming']>=2) #1
+		vars['a05incoming']=0 #0
+		end if
+		if(vars['a05incoming']==0) #1
+		branchto(node=1915, ofsection=-1, immediate=false) #1
+		else #0
+		branchto(node=1919, ofsection=-1, immediate=false) #1
+		end if
+		vars['a05incoming']+=1 #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S03Base_0xd43075,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1234, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S03Threat1_0x6927e7,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1001, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S03Threat1_1_0x61947a,
+	actions:[
+		branchto(node=931, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J05DeepOceanIntro_0x80d32e,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1698, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J05Threat1_1_0xce3314,
+	actions:[
+		branchto(node=768, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J05Threat1_0xbd845f,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1573, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J09AmsterdamIntro_0xd34aec,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1402, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J09SovietNukeAttack_0x2503f,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1701, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J09SovietNukeAttack_0x34634c,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1707, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J09Threat1_1_0xf2d394,
+	actions:[
+		branchto(node=771, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J08KremlinIntro_0xa61baf,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1234, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J08ShogunExecutioner_0xfbfc1b,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1719, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J08ShogunExecutioner_0x7abd9,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1234, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J08TimeMachineDestroyed_0x90579d,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1716, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_J08TimeMachineDestroyed_0xe7a68e,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1710, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J08BeginExecutionerCombat_0xedf9a3,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1782, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J08JapanGainGround_0x23f35c,
+	actions:[
+		branchto(node=1748, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J08KrukovSetBack_0x8f3acc,
+	actions:[
+		branchto(node=1722, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J08Threat1_1_0x30b8b9,
+	actions:[
+		branchto(node=915, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseEasterIsland_0x59ebec,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1815, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseRushmoreMarch_0x6c6602,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1286, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseJapan1_0x4499b5,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1258, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseJapan2_0x4dc8a4,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1655, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseDeepOcean_0x1ede2e,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1686, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseRussia_0x9c3735,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1129, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseBrightonAction_0xe2fbcf,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1677, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseEurope_0xa255a5,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1396, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseMykonos_0x209fbf,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1162, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseGibraltar_0x247bf9,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1423, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseCold_0xc055b1,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1234, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseBrightonAttackWave_0xfd9b9a,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1331, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPBaseNYC_0x21b3ca,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1643, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPCombat_0x30a1d2,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		if(vars['player']==0) #0
+		if(vars['variation']==1) #0
+		branchto(node=204, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=92, ofsection=-1, immediate=false) #0
+		end if
+		else if(vars['player']==1) #0
+		if(vars['variation']==1) #0
+		branchto(node=533, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=365, ofsection=-1, immediate=false) #0
+		end if
+		else if(vars['player']==2) #0
+		if(vars['variation']==1) #0
+		branchto(node=774, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=651, ofsection=-1, immediate=false) #0
+		end if
+		else #0
+		if(vars['variation']==1) #0
+		branchto(node=204, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=92, ofsection=-1, immediate=false) #0
+		end if
+		end if
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPSetAdvantagePlayer_0xf75b32,
+	actions:[
+		if(vars['player']==0) #0
+		if(vars['variation']==1) #0
+		branchto(node=296, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=135, ofsection=-1, immediate=false) #0
+		end if
+		else if(vars['player']==1) #0
+		if(vars['variation']==1) #0
+		branchto(node=582, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=460, ofsection=-1, immediate=false) #0
+		end if
+		else if(vars['player']==2) #0
+		if(vars['variation']==1) #0
+		branchto(node=843, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=689, ofsection=-1, immediate=false) #0
+		end if
+		else #0
+		if(vars['variation']==1) #0
+		branchto(node=296, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=135, ofsection=-1, immediate=false) #0
+		end if
+		end if
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPSetAdvantageEnemy_0xa3d8bd,
+	actions:[
+		if(vars['player']==0) #0
+		if(vars['variation']==1) #0
+		branchto(node=248, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=112, ofsection=-1, immediate=false) #0
+		end if
+		else if(vars['player']==1) #0
+		if(vars['variation']==1) #0
+		branchto(node=575, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=454, ofsection=-1, immediate=false) #0
+		end if
+		else if(vars['player']==2) #0
+		if(vars['variation']==1) #0
+		branchto(node=811, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=680, ofsection=-1, immediate=false) #0
+		end if
+		else #0
+		if(vars['variation']==1) #0
+		branchto(node=248, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=112, ofsection=-1, immediate=false) #0
+		end if
+		end if
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPResetAdvantage_0xb13d00,
+	actions:[
+		if(vars['player']==0) #0
+		if(vars['variation']==1) #0
+		branchto(node=204, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=92, ofsection=-1, immediate=false) #0
+		end if
+		else if(vars['player']==1) #0
+		if(vars['variation']==1) #0
+		branchto(node=533, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=365, ofsection=-1, immediate=false) #0
+		end if
+		else if(vars['player']==2) #0
+		if(vars['variation']==1) #0
+		branchto(node=774, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=651, ofsection=-1, immediate=false) #0
+		end if
+		else #0
+		if(vars['variation']==1) #0
+		branchto(node=204, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=92, ofsection=-1, immediate=false) #0
+		end if
+		end if
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_Tutorial1_0xf09f91,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=83, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_Tutorial2_0xf9ce94,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1815, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_Tutorial3_0xfefecb,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1331, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_Tutorial4_0x9a6aa6,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1286, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_Tutorial5_0x9d5b87,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1677, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_Tutorial6_0x940a98,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1417, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_TutorialMontage_0xc339f1,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=9, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_EndMissionWin_0x19f787,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		if(vars['player']==0) #0
+		branchto(node=1325, ofsection=-1, immediate=false) #0
+		else if(vars['player']==1) #0
+		branchto(node=1328, ofsection=-1, immediate=false) #0
+		else if(vars['player']==2) #0
+		branchto(node=1564, ofsection=-1, immediate=false) #0
+		else #0
+		branchto(node=1325, ofsection=-1, immediate=false) #0
+		end if
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_EndMissionLose_0xb2b433,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1573, ofsection=-1, immediate=false) #0
+		branchto(node=1899, ofsection=-1, immediate=false) #1
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S09FinalVictory_0xd09c0a,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1830, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S09InvasionForce_0x58093b,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1833, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S09InvasionForce_0x5e8e4,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1591, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S08EasterIslandBase_0x31e7dd,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1815, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_08Threat1_1_0x944a1e,
+	actions:[
+		branchto(node=1839, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_09Threat1_1_0x56222f,
+	actions:[
+		branchto(node=1836, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_SR_S01LeninIntro_0x20f7a,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1129, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S07EmperorDead_0x236e3a,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1842, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J08PursuePremier_0x89975f,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1845, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_J09SovietsArrive_0xda90af,
+	actions:[
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1JapExploreAlt1_0x96e865,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1010, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1JapExploreAlt2_0x9fb9b6,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1019, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1Tropical_0xd8bf59,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1028, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1JapExploreAlt1_0xff0de8,
+	actions:[
+		branchto(node=935, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1JapExploreAlt2_0xf65feb,
+	actions:[
+		branchto(node=939, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1Tropical_0xff6196,
+	actions:[
+		branchto(node=943, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1BrightonAction_0x8bcc22,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1046, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1GibraltarExplore_0xeb2b25,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=992, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1NYCExplore_0x3d27e4,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1055, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1BrightonAction_0xe22b3f,
+	actions:[
+		branchto(node=947, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1GibraltarExplore_0xf9716,
+	actions:[
+		branchto(node=927, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1NYCExplore_0x5ff951,
+	actions:[
+		branchto(node=951, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1SovExploreAlt_0x78053,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1064, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1SovExploreAlt_0x642a3f,
+	actions:[
+		branchto(node=919, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A03HeidelbergThreat1_1_0x94fb8,
+	actions:[
+		branchto(node=955, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_A03HeidelbergThreat1_0x7761cc,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1073, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_S08EasterIslandThreat1_0x6e3bb1,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1037, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S09_Threat1_0xf3f6c3,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1055, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1RushmoreCombat_0x50f18,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1082, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1RushmoreCombat_0x6ce93b,
+	actions:[
+		branchto(node=960, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1EurExpAlt_0xabd9a3,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1073, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1EurExpAlt_0xedeb5c,
+	actions:[
+		branchto(node=955, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1Brighton_0xcdb123,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1091, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1Brighton_0xea6f1e,
+	actions:[
+		branchto(node=965, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1DeepOcean_0x803f32,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1100, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1DeepOcean_0xc60fbb,
+	actions:[
+		branchto(node=1100, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1Iceland_0x46d8cf,
+	actions:[
+		branchto(node=-1, ofsection=-1, immediate=true) #0
+		branchto(node=1109, ofsection=-1, immediate=false) #0
+	],
+},
+event: {
+	eventID: PATH_EVENT_S_MPThreat1_1Iceland_0xa891f9,
+	actions:[
+		branchto(node=970, ofsection=-1, immediate=false) #0
+	],
+},

@@ -1,0 +1,4 @@
+[
+	{ path: "track.mus", startingsample: 0, numsubbanks: 0, purgemode: 0, muschecksum: 2250764907, maxaram: 31664, maxmram: 0},
+	{ path: "track-mem.mus", startingsample: 715, numsubbanks: 0, purgemode: 0, muschecksum: 3351920482, maxaram: 1040, maxmram: 0},
+]

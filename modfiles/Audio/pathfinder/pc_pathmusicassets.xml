@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Tags></Tags>
+	<Includes>
+	</Includes>
+	<PathMusicMap id="PC_RA3PathMusicMap" File="pc.0.mpf">
+	</PathMusicMap>
+	<PathMusicTrack id="Track_Mem" File="track-mem.0.mus" Type="OVERLAY_0" PathfinderTrackHeader="AUDIO:Pathfinder\RA3Music\pc\RA3Music.0.h">
+	</PathMusicTrack>
+	<PathMusicTrack id="Track" File="track.0.mus" Type="MAIN" PathfinderTrackHeader="AUDIO:Pathfinder\RA3Music\pc\RA3Music.0.h">
+	</PathMusicTrack>
+</AssetDeclaration>
