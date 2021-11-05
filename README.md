@@ -1,2 +1,2 @@
 # ra3pathmusic
-Tools that edit music files from Red Alert 3
+Tools that edit path music files from Red Alert 3
