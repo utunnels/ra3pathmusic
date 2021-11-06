@@ -767,9 +767,9 @@ function rewritempfsamples(newpath){
 
 function writemusfiles(){
 
+  parsetracks();
   parsenodes();
   parseevents();
-  parsetracks();
   //pc.mpf
   var newmpf = path + mpfpath.substring(0, mpfpath.length-4)+'.0.mpf';
   var newsamples = [];
@@ -777,9 +777,9 @@ function writemusfiles(){
   for(var index=0;index<newmpfobj.header.numtracks;index++){
     //musobj as a template
     // currently, only the first mus (index=0) can be modified
-    var musobj = muses[index];
-    var oldpath = path + musobj.path;
-    var newpath = path + musobj.path.substring(0, musobj.path.length-4)+'.0.mus';
+    var musobj = muses[index]||muses[0];
+    var oldpath = path + newmpfobj.trackinfos[index].path;
+    var newpath = path + newmpfobj.trackinfos[index].path.substring(0, newmpfobj.trackinfos[index].path.length-4)+'.0.mus';
     /*
   var PATHMUSHEADER = {
       checksum: -32,
@@ -804,11 +804,12 @@ function writemusfiles(){
     }
     fs.writeSync(outfh, tempbuf, 0, tempbuf.length, offset);
     offset += tempbuf.length;
-    var snroffset = musobj.nodeoffsets[0].snroffset;
-    var snsoffset = musobj.nodeoffsets[0].snsoffset;
+    var snroffset = Math.ceil((offset + musobj.nodeoffsets[0].__size/8 * numsamples)/16);
+    var snsoffset = Math.ceil((snroffset + 16*numsamples)/128);
     tempbuf = Buffer.alloc(musobj.nodeoffsets[0].__size/8);
     newmpfobj.trackinfos[index].startingsample = startingsample;
     startingsample += numsamples;
+    var filesize = 0;
     for(var i=0;i<numsamples;i++){
       /*
       nodechecksum: 32,
@@ -837,9 +838,16 @@ function writemusfiles(){
       offset += tempbuf.length;
       fs.writeSync(outfh, snr, 0, snr.length, snroffset*16);
       fs.writeSync(outfh, sns, 0, sns.length, snsoffset*128);
+      filesize = snsoffset*128 + sns.length;
       snroffset += Math.ceil(snr.length/16);
       snsoffset += Math.ceil(sns.length/128);
     }
+    var expectedfilesize = snsoffset*128;
+    if(filesize<expectedfilesize){
+      tempbuf = Buffer.alloc(1);
+      fs.writeSync(outfh, tempbuf, 0, 1, expectedfilesize-1);
+    }//padding to 128 bytes
+
     fs.closeSync(outfh);
   }
 
@@ -864,6 +872,10 @@ function writemusfiles(){
   nodeoffset0 = Math.ceil(nodeoffset0/4);
   for(var i=0;i<newmpfobj.header.numnodes;i++){
     newmpfobj.nodeoffsets[i] += nodeoffset0;
+    var nd = newmpfobj.nodes[i];
+    if(nd.index>0){
+      nd.index += newmpfobj.trackinfos[nd.trackID].startingsample;
+    }
   }
   newmpfobj.header.nodedata = nodeoffset0*4;//_nodedatasize
   newmpfobj.header.eventoffsets = newmpfobj.header.nodedata + newmpfobj.header._nodedatasize;
@@ -1356,7 +1368,7 @@ function printnodeinfos(){
   for(var i=0;i<mpfobj.nodes.length;i++){
     //node
     var nd = mpfobj.nodes[i];
-    ss += '{index: ' + nd.index;
+    ss += '{index: ' + (nd.index>0?(nd.index-mpfobj.trackinfos[nd.trackID].startingsample):nd.index);
     ss += ', trackID: ' + nd.trackID;
     ss += ', sectionID: ' + nd.sectionID;
     ss += ', repeat: ' + nd.repeat;
