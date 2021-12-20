@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Mus Tool</title>
+    <title>PathMusic Editor</title>
     <style>
     body, html {padding:0;; margin:0; display:table; width:100%;}
     #left {display:table-cell; padding:10px; box-sizing:border-box;}
@@ -12,16 +12,16 @@
   </head>
   <body>
     <div id="left">
-      <div><input id="dumpbutton" type="button" value="重新导出数据（重新初始化）" onclick="dumpall()" /></div>
-      <div class="msg" id="msg1">↑↑注意，这会覆盖当前的文件，注意备份</div>
+      <div><input id="dumpbutton" type="button" value="Export files" onclick="dumpall()" /></div>
+      <div class="msg" id="msg1">↑↑Warning: this will overwrite existing files</div>
 
-      <div><input id="createbutton" type="button" value="创建新的MUS和MPF文件" onclick="startthis()" /></div>
-      <div class="msg" id="msg">↑↑点击上方的按钮开始写入文件</div>
+      <div><input id="createbutton" type="button" value="Build new mus and mpf files" onclick="startthis()" /></div>
+      <div class="msg" id="msg">↑↑Click this button to create new files for your mod</div>
     </div>
     <div id="right">
-      <p>注意：这个工具处于试验阶段。</p>
+      <p>Note: this tool is still experimental</p>
       <p></p>
-      <p>mod中使用track-mem.mus（id="Track_mem"）会导致游戏里所有所有音乐失效，track-mem.mus文件目前只用来研究。</p>
+      <p>SDK settings: </p>
       <p><img src="sdk1.png" /></p>
     </div>
     <script>
@@ -34,34 +34,34 @@
         document.getElementById('createbutton').disabled='';
       }
       function startthis(){
-        document.getElementById('msg').innerHTML = '开始写入……';
+        document.getElementById('msg').innerHTML = 'Writing files...';
         disablebuttons();
         setTimeout(function(){
           writemusfiles();
-          document.getElementById('msg').innerHTML = '写入完成。';
+          document.getElementById('msg').innerHTML = 'Done.';
           enablebuttons();
         },1);
       }
       function dumpall(){
-        if(!confirm('确定要重新导出数据吗？')){
+        if(!confirm('Are your sure you want to export files?')){
           return;
         }
         var msg1 = document.getElementById('msg1');
         disablebuttons();
-        msg1.innerHTML = '开始导出……';
-        msg1.innerHTML += '<br>从mus中导出sns和sns数据';
+        msg1.innerHTML = 'Exporting files...';
+        msg1.innerHTML += '<br>exporting snr and sns files from mus files...';
         setTimeout(function(){
           dumpsnrandsns();
-        msg1.innerHTML += '<br>导出track信息到tracks.txt';
+        msg1.innerHTML += '<br>printing tracks.txt';
         setTimeout(function(){
           printtracks();
-        msg1.innerHTML += '<br>导出node信息到nodes.txt';;
+        msg1.innerHTML += '<br>printing nodes.txt';;
         setTimeout(function(){
           printnodeinfos();
-        msg1.innerHTML += '<br>导出event信息到events.txt';
+        msg1.innerHTML += '<br>printing events.txt';
         setTimeout(function(){
           printevents();
-          msg1.innerHTML += '<br>导出完成。';
+          msg1.innerHTML += '<br>Done.';
           enablebuttons();
         },1);
         },1);
@@ -805,7 +805,8 @@ function writemusfiles(){
     fs.writeSync(outfh, tempbuf, 0, tempbuf.length, offset);
     offset += tempbuf.length;
     var snroffset = Math.ceil((offset + musobj.nodeoffsets[0].__size/8 * numsamples)/16);
-    var snsoffset = Math.ceil((snroffset + 16*numsamples)/128);
+    snroffset = Math.ceil(snroffset/16)*16;
+    var snsoffset = Math.ceil((snroffset*16 + 16*numsamples)/128);
     tempbuf = Buffer.alloc(musobj.nodeoffsets[0].__size/8);
     newmpfobj.trackinfos[index].startingsample = startingsample;
     startingsample += numsamples;
@@ -1287,7 +1288,7 @@ function printevents(){
       }
       return s;
     }else if(a.type==PATHACTIONTYPE.PATHACTION_EVENT){
-      s += 'call(' + findevent(a.act.event.eventid) + '_0x' + a.act.event.eventid.toString(16) + ')';
+      s += 'call(' + findevent(a.act.event.eventid|0x1000000) + '_0x' + a.act.event.eventid.toString(16) + ')';
       return s;
     }else if(a.type==PATHACTIONTYPE.PATHACTION_WAITTIME){
       s += 'wait('
