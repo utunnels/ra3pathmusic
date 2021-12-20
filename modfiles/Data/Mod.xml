@@ -2,19 +2,8 @@
 <AssetDeclaration xmlns="uri:ea.com:eala:asset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<Tags></Tags>
 	<Includes>
-		<!-- 下面这三个是MOD文件的必须文件，不要删了。-->
 		<Include type="reference" source="DATA:static.xml" />
 		<Include type="reference" source="DATA:global.xml" />
 		<Include type="reference" source="DATA:audio.xml" />
-
-		<!-- 注册我们所修改的文件，注意路径要对上哈。-->
-		<!-- 同目录下的文件直接填写文件名即可。-->
-		<!--
-		<Include type="all" source="textures.xml" />
-		<Include type="all" source="SoundEffects.xml" />
-		<Include type="all" source="CrowdResponse.xml" />
-		<Include type="all" source="units/sovconscript/SovietAntiInfantryInfantry.xml" />
-		<Include type="all" source="units/jbwarfactory/JapanWarFactory.xml" />
-		-->
       </Includes>
 </AssetDeclaration>
