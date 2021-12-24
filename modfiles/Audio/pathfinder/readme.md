@@ -1,15 +1,15 @@
 ### Preparition
-1. ~~Download nw.js first. Extract the files into nwjs folder, or another place and change the path in tool.bat, if you prefer.~~
+1. ~~Download nw.js first. Extract the files into nwjs folder, or another place and change the path in tool.com, if you prefer.~~
 
 2. Extract mus files from StaticStream.big and place them in [Audio/pathfinder folder](https://github.com/utunnels/ra3pathmusic/tree/main/modfiles/Audio/pathfinder). They are called data\static\cdata\a70bc1d6.9f12cf33.2d97c0ca.6d02956b.cdata and data\static\cdata\a70bc1d6.9f12cf33.240021e2.dca9eaab.cdata, rename the bigger file to track.mus and the smaller file to track-mem.mus, and you are ready to go.
 ![Image1](https://user-images.githubusercontent.com/4580718/147325725-ae6fe62d-1658-474c-a7f8-928325da501d.png)
 
 ### Basic usage
-1. Run tool.bat, click "Export files", wait for it to complete.
+1. Run tool.com, click "Export files", wait for it to complete.
 
 2. To replace a piece of music, convert your music file to wave format and put it in track.mus.files or track-mem.mus.files. For example, 0.wav to replace 0.snr/sns, and so on.
 
-3. Run convert.bat, wait for it to complete.
+3. Run convert.com, wait for it to complete.
 
 4. Click "Build new mus and mpf files", wait for it to complete.
 
