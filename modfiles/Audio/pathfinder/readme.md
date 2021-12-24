@@ -1,6 +1,5 @@
 ### Preparition
-1. Download [nw.js](https://nwjs.io/) first. Extract the files into [nwjs folder](https://github.com/utunnels/ra3pathmusic/tree/main/modfiles/Audio/pathfinder/nwjs), or another place and change the path in tool.bat, if you prefer.
-![image](https://user-images.githubusercontent.com/4580718/147325916-38055216-3e06-4f90-869d-c3c57b05fcfc.png)
+1. ~~Download nw.js first. Extract the files into nwjs folder, or another place and change the path in tool.bat, if you prefer.~~
 
 2. Extract mus files from StaticStream.big and place them in [Audio/pathfinder folder](https://github.com/utunnels/ra3pathmusic/tree/main/modfiles/Audio/pathfinder). They are called data\static\cdata\a70bc1d6.9f12cf33.2d97c0ca.6d02956b.cdata and data\static\cdata\a70bc1d6.9f12cf33.240021e2.dca9eaab.cdata, rename the bigger file to track.mus and the smaller file to track-mem.mus, and you are ready to go.
 ![Image1](https://user-images.githubusercontent.com/4580718/147325725-ae6fe62d-1658-474c-a7f8-928325da501d.png)
