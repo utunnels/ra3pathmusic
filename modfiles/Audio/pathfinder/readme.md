@@ -7,9 +7,7 @@ Basic usage
 
 4. Click "Build new mus and mpf files", wait for it to complete.
 
-5. Build your mod using mod sdk and see/listen if it works.
-
-SDK settings: build global data
+5. Build your mod using mod sdk and see/listen if it works. SDK settings: build global data
 
 Advanced usage
 1. You can edit events.txt, nodes.txt, and tracks.txt before "Build new mus and mpf files". You may also edit RA3Music.0.h in ra3music folder, if you want to add your own pathmusic event. However, since there are still many unknowns about mpf/mus format, this tool only makes sure you can modify the data, but can't grant the modification work.
