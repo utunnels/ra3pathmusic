@@ -6,3 +6,4 @@ Check [modfiles/Audio/pathfinder/readme.md](modfiles/Audio/pathfinder/readme.md)
 
 ### Useful links:
 [https://ppmforums.com/topic-59944/all-the-known-information-about-pathmusic-in-ra3/](https://ppmforums.com/topic-59944/all-the-known-information-about-pathmusic-in-ra3/)
+[https://github.com/utunnels/snrtool_for_ra3pathmusic](https://github.com/utunnels/snrtool_for_ra3pathmusic)
