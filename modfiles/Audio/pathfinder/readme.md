@@ -4,7 +4,7 @@ Preparition
 
 Basic usage
 1. Run tool.bat, click "Export files", wait for it to complete.
-2. To replace a piece of music, convert your music file to wave format and put it in track.mus.files or track.mus.files or track-mem.mus.files. For example, 0.wav to replace 0.snr/sns, and so on.
+2. To replace a piece of music, convert your music file to wave format and put it in track.mus.files or track-mem.mus.files. For example, 0.wav to replace 0.snr/sns, and so on.
 3. Run convert.bat, wait for it to complete.
 4. Click "Build new mus and mpf files", wait for it to complete.
 5. Build your mod using mod sdk and see/listen if it works. SDK settings: build global data
