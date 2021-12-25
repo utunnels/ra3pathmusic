@@ -32,6 +32,7 @@
 1. ~~下载nw.js解压到nwjs文件夹~~
 
 2. 从StaticStream.big提取mus文件，放到[Audio/pathfinder folder](https://github.com/utunnels/ra3pathmusic/tree/main/modfiles/Audio/pathfinder)文件夹。两个mus文件分别叫做data\static\cdata\a70bc1d6.9f12cf33.2d97c0ca.6d02956b.cdata和data\static\cdata\a70bc1d6.9f12cf33.240021e2.dca9eaab.cdata，把较大的那个命名为track.mus，另外一个命名为track-mem.mus即可。
+
 ![Image1](https://user-images.githubusercontent.com/4580718/147325725-ae6fe62d-1658-474c-a7f8-928325da501d.png)
 
 ### 基本使用
