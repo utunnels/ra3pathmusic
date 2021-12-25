@@ -1,4 +1,4 @@
-[English](#preparition) | [中文]()
+[English](#preparition) | [中文](#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C)
 
 ### Preparition
 1. ~~Download nw.js first. Extract the files into nwjs folder, or another place and change the path in tool.cmd, if you prefer.~~
