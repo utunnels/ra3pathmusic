@@ -1,5 +1,5 @@
 # ra3pathmusic
-[English]() | [中文]()
+[English](#whats-this) | [中文](#%E8%BF%99%E6%98%AF%E4%BB%80%E4%B9%88)
 
 ### What's this?
 Tools that edit path music files from Red Alert 3. There is no release build for this repository, you can download the source files as a zip file.
