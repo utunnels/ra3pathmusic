@@ -38,7 +38,7 @@
 ### 基本使用
 1. 运行tool.cmd，第一次运行请点击“重新导出数据”按钮导出数据，等待完成。
 
-2. 把需要替换音乐转换成wave格式，放进track.mus.files或者track-mem.mus.files文件夹。比如，0.wav替换0.snr/sns，以此类推。原版的音乐可以用Bibber的工具导出资源试听，常做mod的应该知道工具如何使用，这里就不写了。
+2. 把需要替换音乐转换成wave格式，放进track.mus.files或者track-mem.mus.files文件夹。比如，0.wav替换0.snr/sns，以此类推。原版的音乐可以用Bibber的工具导出资源试听，常做mod的应该知道工具如何使用，这里就不写了。注意，bibber的工具导出的音乐文件名是从1开始的。
 
 3. 运行convert.cmd，等待完成。
 
