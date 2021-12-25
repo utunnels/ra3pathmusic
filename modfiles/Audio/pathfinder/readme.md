@@ -1,4 +1,4 @@
-[English]() | [中文]()
+[English](#preparition) | [中文]()
 
 ### Preparition
 1. ~~Download nw.js first. Extract the files into nwjs folder, or another place and change the path in tool.cmd, if you prefer.~~
