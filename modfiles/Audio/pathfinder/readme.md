@@ -24,7 +24,7 @@
 
 3. nodes.txt: The first part contains pathfinder nodes and branches, the second part (starts from [118,92]) contains routers. The routerID of a node matches router index +1, while 0 means no router specified. The index of a node matches file name +1 in track.directory or track-mem.directory, while 0 and -1 have special purposes.
 
-4. tracks.txt: Usually you only need to change startingsample of track-mem.mus, if you want to add new music files to track.mus, otherwise, leave this file alone.
+4. tracks.txt: Usually you only need to change startingsample of track-mem.mus, if you want to add new music files to track.mus, otherwise, leave this file alone. You may also need to increase maxaram a bit if the game crashes.
 
 -------------------------------------------------
 
@@ -53,4 +53,4 @@
 
 3. nodes.txt：前半部分是node和branch，即节点和分支，后半部分（从[118,92]开始）是router，节点路径。node的routerID等于router的index+1，0有特殊用途。node的index对应音乐文件名编号+1，0和-1有特殊用途。注意，bibber的工具导出的音乐文件名是从1开始的，直接对应node的index，不要和本工具混淆。
 
-4. tracks.txt：通常你不需要改动这个文件，除非你在track.mus的最后添加了新的音乐，需要修改track-mem.mus的startingsample为track.mus的总文件数。
+4. tracks.txt：通常你不需要改动这个文件，除非你在track.mus的最后添加了新的音乐，需要修改track-mem.mus的startingsample为track.mus的总文件数，实际上程序会自动计算这个数值，但是手动改一下能让自己明白一点。如果添加了新的音乐但是播放的时候游戏崩溃了，可以适当调大maxaram这个数值，具体规则不明，但根据现有的mpf推测，这个数值随着音乐数量的增加而增加。
