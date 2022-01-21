@@ -24,7 +24,7 @@
 
 3. nodes.txt: The first part contains pathfinder nodes and branches, the second part (starts from [118,92]) contains routers. The routerID of a node matches router index +1, while 0 means no router specified. The index of a node matches file name +1 in track.directory or track-mem.directory, while 0 and -1 have special purposes.
 
-4. tracks.txt: Usually you only need to change startingsample of track-mem.mus, if you want to add new music files to track.mus, otherwise, leave this file alone. You may also need to increase maxaram a bit if the game crashes.
+4. tracks.txt: Usually you only need to change startingsample of track-mem.mus when you try to append new music files to track.mus, otherwise, leave this file alone. You may also need to increase maxaram a bit if the game crashes.
 
 -------------------------------------------------
 
